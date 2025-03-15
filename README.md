@@ -24,23 +24,36 @@ This project is develop for Python subject.🐍🐍
 git clone https://github.com/Project-BBU-G22/Computer-Selling.git
 ```
 
-### Create Python Environment
+### Step 2: Create Python Environment
 
 ```sh
 python -m venv .env
 ```
 
-### Step 2: Activate The Environment
+### Step 3: Activate The Environment
 
 ```sh
 .env\Scripts\activate
 ```
 
-### Step 3: Install Dependencies From requirements.txt
+### Step 5: Install Dependencies From requirements.txt
 
 ```sh
 pip install -r requirements.txt
 ```
+
+### Step 6: Navigate To The File 
+
+```sh
+cd Django
+```
+
+### Step 7: Run The Project
+
+```sh
+python manage.py runserver
+```
+
 <div align="center">
 
 # Enjoy The Project (*^▽^*)
