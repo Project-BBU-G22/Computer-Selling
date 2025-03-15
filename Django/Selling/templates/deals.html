@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deals - MaxPC</title>
+    <link rel="stylesheet" href="../static/css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <div class="container">
+                <div class="logo">
+                    <a href="index.html"><h1>MaxPC</h1></a>
+                </div>
+                
+                <div class="menu-toggle" id="mobile-menu">
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                </div>
+                
+                <ul class="nav-menu">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="index.html#products">Products</a></li>
+                    <li><a href="#" class="active">Deals</a></li>
+                    <li><a href="about.html">About Us</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                </ul>
+                
+                <div class="nav-icons">
+                    <a href="#search"><i class="fas fa-search"></i></a>
+                    <a href="#cart" class="cart-icon">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span class="cart-count" id="cart-count">0</span>
+                    </a>
+                    <a href="#account"><i class="fas fa-user"></i></a>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <section class="deals-hero">
+        <div class="container">
+            <h1>Hot Deals & Special Offers</h1>
+            <p>Limited time discounts on premium tech products</p>
+            <div class="deals-stats">
+                <div class="stat-item">
+                    <i class="fas fa-tags"></i>
+                    <span class="stat-number" id="active-deals-count">0</span>
+                    <span class="stat-label">Active Deals</span>
+                </div>
+                <div class="stat-item">
+                    <i class="fas fa-users"></i>
+                    <span class="stat-number">1000+</span>
+                    <span class="stat-label">Happy Customers</span>
+                </div>
+                <div class="stat-item">
+                    <i class="fas fa-dollar-sign"></i>
+                    <span class="stat-number">Up to 70%</span>
+                    <span class="stat-label">Savings</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="featured-deal">
+        <div class="container">
+            <div class="featured-deal-content">
+                <div class="featured-deal-info">
+                    <span class="featured-label">Featured Deal of the Day</span>
+                    <h2>ASUS ROG Gaming Laptop</h2>
+                    <p>15.6" Gaming Laptop - AMD Ryzen 9, RTX 4070, 32GB RAM, 1TB SSD</p>
+                    <div class="featured-deal-price">
+                        <span class="new-price">$1,499.99</span>
+                        <span class="old-price">$1,999.99</span>
+                        <span class="savings-badge">Save 25%</span>
+                    </div>
+                    <button class="featured-deal-btn" data-id="rog-gaming-laptop">
+                        <i class="fas fa-shopping-cart"></i>
+                        Add to Cart
+                    </button>
+                </div>
+                <div class="featured-deal-image" id="featured-deal-image-container">
+                    <img 
+                        id="featured-deal-image" 
+                        src="https://images.unsplash.com/photo-1603302576837-37561b2e2302?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80" 
+                        alt="ASUS ROG Gaming Laptop"
+                        onerror="this.parentElement.classList.add('error')"
+                        onload="this.parentElement.classList.remove('loading')"
+                    >
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="deals-timer">
+        <div class="container">
+            <div class="timer-wrapper">
+                <div class="timer-header">
+                    <h2>Flash Sale Ends In:</h2>
+                    <span class="flash-deals-count" id="flash-deals-count">0 Flash Deals Available</span>
+                </div>
+                <div class="countdown" id="countdown">
+                    <div class="countdown-item">
+                        <span id="days">00</span>
+                        <span>Days</span>
+                    </div>
+                    <div class="countdown-item">
+                        <span id="hours">00</span>
+                        <span>Hours</span>
+                    </div>
+                    <div class="countdown-item">
+                        <span id="minutes">00</span>
+                        <span>Minutes</span>
+                    </div>
+                    <div class="countdown-item">
+                        <span id="seconds">00</span>
+                        <span>Seconds</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="deals-grid">
+        <div class="container">
+            <div class="deals-header">
+                <div class="deals-filters">
+                    <button class="filter-btn active" data-filter="all">
+                        <i class="fas fa-border-all"></i>
+                        All Deals
+                    </button>
+                    <button class="filter-btn" data-filter="clearance">
+                        <i class="fas fa-fire"></i>
+                        Clearance
+                    </button>
+                    <button class="filter-btn" data-filter="bundle">
+                        <i class="fas fa-box"></i>
+                        Bundle Deals
+                    </button>
+                    <button class="filter-btn" data-filter="flash">
+                        <i class="fas fa-bolt"></i>
+                        Flash Sales
+                    </button>
+                </div>
+                <div class="deals-sort">
+                    <label for="sort-select">Sort by:</label>
+                    <select id="sort-select" onchange="sortDeals(this.value)">
+                        <option value="discount">Biggest Discount</option>
+                        <option value="price-low">Price: Low to High</option>
+                        <option value="price-high">Price: High to Low</option>
+                        <option value="ending-soon">Ending Soon</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="deals-container" id="deals-container">
+                <!-- Deals will be loaded dynamically here -->
+            </div>
+
+            <div class="deals-empty hidden" id="deals-empty">
+                <i class="fas fa-search"></i>
+                <p>No deals found for the selected category</p>
+                <button class="reset-filters-btn" onclick="resetFilters()">Show All Deals</button>
+            </div>
+
+            <div class="load-more-container">
+                <button id="load-more-btn" class="load-more-btn">
+                    Load More Deals
+                    <i class="fas fa-chevron-down"></i>
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <section class="newsletter">
+        <div class="container">
+            <div class="newsletter-content">
+                <div class="newsletter-info">
+                    <h2>Get Exclusive Deals</h2>
+                    <p>Subscribe to our newsletter and never miss out on our best offers</p>
+                    <ul class="newsletter-benefits">
+                        <li><i class="fas fa-check"></i> Early access to sales</li>
+                        <li><i class="fas fa-check"></i> Exclusive subscriber discounts</li>
+                        <li><i class="fas fa-check"></i> New deal alerts</li>
+                    </ul>
+                </div>
+                <form id="newsletter-form" class="newsletter-form">
+                    <div class="form-group">
+                        <input type="email" placeholder="Your email address" required>
+                        <button type="submit">
+                            <span>Subscribe</span>
+                            <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </div>
+                    <div class="form-privacy">
+                        <input type="checkbox" id="privacy-check" required>
+                        <label for="privacy-check">I agree to receive promotional emails</label>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Search Modal -->
+    <div id="search-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <div class="search-header">
+                <h2>Search Products</h2>
+                <div class="search-bar">
+                    <input type="text" id="search-input" placeholder="Search products...">
+                    <button id="search-clear" class="hidden"><i class="fas fa-times"></i></button>
+                </div>
+            </div>
+            <div class="search-filters">
+                <select id="search-category">
+                    <option value="">All Categories</option>
+                    <option value="laptops">Laptops</option>
+                    <option value="desktops">Desktops</option>
+                    <option value="accessories">Accessories</option>
+                </select>
+                <select id="search-sort">
+                    <option value="relevance">Relevance</option>
+                    <option value="price-asc">Price: Low to High</option>
+                    <option value="price-desc">Price: High to Low</option>
+                    <option value="name-asc">Name: A to Z</option>
+                </select>
+            </div>
+            <div id="search-status" class="search-status">
+                <div class="search-loading hidden">Searching...</div>
+                <div class="search-count">0 products found</div>
+            </div>
+            <div id="search-grid" class="search-grid"></div>
+            <div id="search-empty" class="search-empty hidden">
+                <p>No products found. Try different search terms.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cart Modal -->
+    <div id="cart-modal" class="modal">
+        <div class="modal-content cart-modal">
+            <div class="cart-header">
+                <h2>Your Cart</h2>
+                <span class="close-modal">&times;</span>
+            </div>
+            
+            <div id="cart-empty-message" class="cart-empty hidden">
+                <i class="fas fa-shopping-cart"></i>
+                <p>Your cart is empty</p>
+                <button class="continue-shopping">Continue Shopping</button>
+            </div>
+
+            <div id="cart-content" class="cart-content">
+                <div id="cart-items" class="cart-items">
+                    <!-- Cart items will be dynamically added here -->
+                </div>
+
+                <div class="cart-summary">
+                    <div class="summary-row">
+                        <span>Subtotal</span>
+                        <span id="cart-subtotal">$0.00</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Shipping</span>
+                        <span id="cart-shipping">$0.00</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Tax (10%)</span>
+                        <span id="cart-tax">$0.00</span>
+                    </div>
+                    <div class="summary-row total">
+                        <span>Total</span>
+                        <span id="cart-total">$0.00</span>
+                    </div>
+                    <div class="cart-actions">
+                        <button class="checkout-btn">Proceed to Checkout</button>
+                        <button class="continue-shopping">Continue Shopping</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Account Modal -->
+    <div id="account-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <div id="login-form">
+                <h2>Login</h2>
+                <form>
+                    <input type="email" placeholder="Email" required>
+                    <input type="password" placeholder="Password" required>
+                    <button type="submit">Login</button>
+                </form>
+                <p>Don't have an account? <a href="#" id="show-register">Register</a></p>
+            </div>
+            <div id="register-form" style="display: none;">
+                <h2>Register</h2>
+                <form>
+                    <input type="text" placeholder="Full Name" required>
+                    <input type="email" placeholder="Email" required>
+                    <input type="password" placeholder="Password" required>
+                    <input type="password" placeholder="Confirm Password" required>
+                    <button type="submit">Register</button>
+                </form>
+                <p>Already have an account? <a href="#" id="show-login">Login</a></p>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>MaxPC</h3>
+                    <p>Your destination for premium computing solutions and expert tech advice.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="index.html#products">Products</a></li>
+                        <li><a href="#">Deals</a></li>
+                        <li><a href="about.html">About Us</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Contact Us</h3>
+                    <ul class="contact-info">
+                        <li><i class="fas fa-map-marker-alt"></i>Svay Dungkum district, Siem Reap province</li>
+                        <li><i class="fas fa-phone"></i> (+855) 694 645 29</li>
+                        <li><i class="fas fa-envelope"></i> info@maxpc.com</li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Payment Methods</h3>
+                    <div class="payment-methods">
+                        <i class="fab fa-cc-visa"></i>
+                        <i class="fab fa-cc-mastercard"></i>
+                        <i class="fab fa-cc-amex"></i>
+                        <i class="fab fa-cc-paypal"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 MaxPC. All Rights Reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../javascript/deals.js"></script>
+    <script src="../javascript/script.js"></script>
+    <script src="../javascript/modal-handlers.js"></script>
+</body>
+</html>
