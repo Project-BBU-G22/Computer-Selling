@@ -3,44 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MaxPC - Modern Computing Solutions</title>
+    <title>MaxPC </title>
     <link rel="stylesheet" href="../static/css/styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-    <header>
-        <nav class="navbar">
-            <div class="container">
-                <div class="logo">
-                    <a href="{% url 'index' %}"><h1>MaxPC</h1></a>
-                </div>
-                
-                <div class="menu-toggle" id="mobile-menu">
-                    <span class="bar"></span>
-                    <span class="bar"></span>
-                    <span class="bar"></span>
-                </div>
-                
-                <ul class="nav-menu">
-                    <li><a href="{% url 'index' %}">Home</a></li>
-                    <li><a href="#products">Products</a></li>
-                    <li><a href="{% url 'deals' %}">Deals</a></li>
-                    <li><a href="{% url 'about' %}">About Us</a></li>
-                    <li><a href="{% url 'contact' %}">Contact</a></li>
-                </ul>
-                
-                <div class="nav-icons">
-                    <a href="#search"><i class="fas fa-search"></i></a>
-                    <a href="#cart" class="cart-icon">
-                        <i class="fas fa-shopping-cart"></i>
-                        <span class="cart-count" id="cart-count">0</span>
-                    </a>
-                    <a href="#account"><i class="fas fa-user"></i></a>
-                </div>
-            </div>
-        </nav>
-    </header>
+    {% extends 'base.html' %}
 
+    {% block title %}Home - MaxPC{% endblock %}
+    
+    {% block content %}
     <section class="hero" id="home">
         <div class="hero-slider">
             <div class="slide active">
@@ -171,52 +143,7 @@
         </div>
     </section>
 
-    <footer>
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-section">
-                    <h3>MaxPC</h3>
-                    <p>Your destination for premium computing solutions and expert tech advice.</p>
-                    <div class="social-links">
-                        <a href="#"><i class="fab fa-facebook"></i></a>
-                        <a href="#"><i class="fab fa-twitter"></i></a>
-                        <a href="#"><i class="fab fa-instagram"></i></a>
-                        <a href="#"><i class="fab fa-youtube"></i></a>
-                    </div>
-                </div>
-                <div class="footer-section">
-                    <h3>Quick Links</h3>
-                    <ul>
-                        <li><a href="#home">Home</a></li>
-                        <li><a href="#products">Products</a></li>
-                        <li><a href="deals.html">Deals</a></li>
-                        <li><a href="about.html">About Us</a></li>
-                        <li><a href="contact.html">Contact</a></li>
-                    </ul>
-                </div>
-                <div class="footer-section">
-                    <h3>Contact Us</h3>
-                    <ul class="contact-info">
-                        <li><i class="fas fa-map-marker-alt"></i>Svay Dungkum district, Siem Reap province</li>
-                        <li><i class="fas fa-phone"></i> (+855) 694 645 29</li>
-                        <li><i class="fas fa-envelope"></i> info@maxpc.com</li>
-                    </ul>
-                </div>
-                <div class="footer-section">
-                    <h3>Payment Methods</h3>
-                    <div class="payment-methods">
-                        <i class="fab fa-cc-visa"></i>
-                        <i class="fab fa-cc-mastercard"></i>
-                        <i class="fab fa-cc-amex"></i>
-                        <i class="fab fa-cc-paypal"></i>
-                    </div>
-                </div>
-            </div>
-            <div class="footer-bottom">
-                <p>&copy; 2025 TechHub. All Rights Reserved.</p>
-            </div>
-        </div>
-    </footer>
+   
 
     <!-- Product Quick View Modal -->
     <div class="modal" id="product-modal">
@@ -558,5 +485,6 @@
 
     <script src="../static/javascript/script.js"></script>
     <script src="../static/javascript/auth.js"></script>
+    {% endblock %}
 </body>
 </html>
