@@ -22,12 +22,13 @@
                 </div>
                 
                 <ul class="nav-menu">
-                    <li><a href="index.html">Home</a></li>
-                    <li><a href="index.html#products">Products</a></li>
-                    <li><a href="#" class="active">Deals</a></li>
-                    <li><a href="about.html">About Us</a></li>
-                    <li><a href="contact.html">Contact</a></li>
+                    <li><a href="{% url 'index' %}">Home</a></li>
+                    <li><a href="#products">Products</a></li>
+                    <li><a href="{% url 'deals' %}">Deals</a></li>
+                    <li><a href="{% url 'about' %}">About Us</a></li>
+                    <li><a href="{% url 'contact' %}">Contact</a></li>
                 </ul>
+                
                 
                 <div class="nav-icons">
                     <a href="#search"><i class="fas fa-search"></i></a>
