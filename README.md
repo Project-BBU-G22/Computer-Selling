@@ -15,26 +15,35 @@ This project is develop for Python subject.🐍🐍
 ![Django](https://img.shields.io/badge/Django-092E20?style=for-the-badge&logo=django&logoColor=white)  
 
 </div>
+<br>
 
-# To start using the project 
+# To Start Using The Project 
 
-### Step 1: Clone The Repo
+
+### Step 1: Clone The Repositories
 
 ```sh
 git clone https://github.com/Project-BBU-G22/Computer-Selling.git
 ```
 
-### Step 2: Create Python Environment
+### Step 2: Navigate To Computer-Selling
+
+```sh
+cd Computer-Selling
+```
+
+### Step 3: Create Python Environment
 
 ```sh
 python -m venv .env
 ```
 
-### Step 3: Activate The Environment
+### Step 4: Activate The Environment
 
 ```sh
 .env\Scripts\activate
 ```
+
 
 ### Step 5: Install Dependencies From requirements.txt
 
@@ -54,13 +63,19 @@ cd Django
 python manage.py runserver
 ```
 
-<div align="center">
+### ‼️To Close The Python Environment ‼️
 
-# Enjoy The Project (*^▽^*)
-
-</div>
-
-### To Close The Python Environment
 ```sh
 deactivate
 ```
+
+<div align="center">
+
+# Enjoy The Project
+
+<!---  <img height="300" src="https://i.imgflip.com/65efzo.gif"  />  --->
+<img height="300" width="700" src="https://i.pinimg.com/originals/43/5f/6d/435f6d95a347985d8796b4943a1d7b1c.gif"  /> 
+
+</div>
+
+
