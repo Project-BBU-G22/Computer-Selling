@@ -66,6 +66,7 @@ python manage.py runserver
 ### ‼️To Close The Python Environment ‼️
 
 ```sh
+cd ..
 deactivate
 ```
 
