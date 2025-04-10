@@ -1,0 +1,23 @@
+
+
+                <!-- Login Form -->
+<form action="" method="post">
+    {% csrf_token %}
+    <div id="login-form" class="auth-form">
+        <div class="social-auth">
+            <form>
+                <div class="mb-3">
+                    <label for="exampleInputEmail1" class="form-label">User Name</label>
+                    <input type="text" class="form-control" name="username" aria-describedby="emailHelp">
+                </div>
+                <div class="mb-3">
+                    <label for="exampleInputPassword1" class="form-label">Password</label>
+                        <input type="password" class="form-control" name="password">
+                </div>
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+        </div>                    
+    </div>
+</form>
+
+              
