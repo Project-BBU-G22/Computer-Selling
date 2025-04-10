@@ -11,7 +11,7 @@
             <nav class="navbar">
                 <div class="container">
                     <div class="logo">
-                        <a href="{% url 'index' %}"><h1>MaxPC</h1></a>
+                        <a href="{% url 'base' %}"><h1>MaxPC</h1></a>
                     </div>
 
                     <div class="menu-toggle" id="mobile-menu">
@@ -21,9 +21,7 @@
                     </div>
 
                     <ul class="nav-menu">
-                        <li><a href="{% url 'index' %}">Home</a></li>
-                        <li><a href="{% url 'index' %}#products">Products</a></li>
-                        <li><a href="{% url 'login' %}">login</a></li>                       
+                        <li><a href="{% url 'base' %}">Home</a></li>               
                     </ul>
 
                     <div class="nav-icons">
@@ -32,7 +30,7 @@
                             <i class="fas fa-shopping-cart"></i>
                             <span class="cart-count" id="cart-count">0</span>
                         </a>
-                        <a href="#account"><i class="fas fa-user"></i></a>
+                        <a href="{% url 'login' %}"><i class="fas fa-user"></i></a>
                     </div>
                 </div>
             </nav>
@@ -42,207 +40,6 @@
             {% block content %}
             {% endblock %}
         </div>
-
-        <!-- Search Modal -->
-    <div id="search-modal" class="modal">
-        <div class="modal-content search-modal">
-            <div class="search-header">
-                <h2>Search Products</h2>
-                <div class="search-input-wrapper">
-                    <i class="fas fa-search search-icon"></i>
-                    <input 
-                        type="text" 
-                        id="search-input" 
-                        placeholder="Search Products..."
-                        autocomplete="off"
-                    >
-                    <button id="search-clear" class="search-clear hidden">
-                        <i class="fas fa-times"></i>
-                    </button>
-                </div>
-                <span class="close-modal">&times;</span>
-            </div>
-            
-            <div class="search-container">
-                <div class="search-filters">
-                    <select id="search-category" class="search-select">
-                        <option value="">All Categories</option>
-                        <option value="laptop">Laptops</option>
-                        <option value="desktop">Desktops</option>
-                        <option value="gaming">Gaming</option>
-                    </select>
-                    <select id="search-sort" class="search-select">
-                        <option value="relevance">Sort by Relevance</option>
-                        <option value="price-asc">Price: Low to High</option>
-                        <option value="price-desc">Price: High to Low</option>
-                        <option value="name-asc">Name: A to Z</option>
-                    </select>
-                </div>
-
-                <div id="search-results" class="search-results">
-                    <div id="search-status" class="search-status">
-                        <span class="search-count">0 products found</span>
-                        <div class="search-loading hidden">
-                            <i class="fas fa-spinner fa-spin"></i> Searching...
-                        </div>
-                    </div>
-                    
-                    <div id="search-grid" class="search-grid">
-                        <!-- Search results will be loaded here -->
-                    </div>
-                    
-                    <div id="search-empty" class="search-empty hidden">
-                        <i class="fas fa-search"></i>
-                        <p>No products found</p>
-                        <span>Try adjusting your search criteria</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Cart Modal -->
-    <div id="cart-modal" class="modal">
-        <div class="modal-content cart-modal">
-            <div class="modal-header">
-                <h2>Your Cart</h2>
-                <span class="close-modal">&times;</span>
-            </div>
-            
-            <div id="cart-empty-message" class="cart-empty hidden">
-                <i class="fas fa-shopping-cart"></i>
-                <p>Your cart is empty</p>
-                <button class="continue-shopping">Continue Shopping</button>
-            </div>
-
-            <div id="cart-content">
-                <div id="cart-items">
-                    <!-- Cart items will be dynamically added here -->
-                </div>
-
-                <div class="cart-summary">
-                    <div class="summary-row">
-                        <span>Subtotal</span>
-                        <span id="cart-subtotal">$0.00</span>
-                    </div>
-                    <div class="summary-row">
-                        <span>Shipping</span>
-                        <span id="cart-shipping">$0.00</span>
-                    </div>
-                    <div class="summary-row">
-                        <span>Tax (10%)</span>
-                        <span id="cart-tax">$0.00</span>
-                    </div>
-                    <div class="summary-row total">
-                        <span>Total</span>
-                        <span id="cart-total">$0.00</span>
-                    </div>
-                    <div class="cart-actions">
-                        <button class="checkout-btn">Proceed to Checkout</button>
-                        <button class="continue-shopping">Continue Shopping</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-        <!-- User Account Modal -->
-        {% include 'login.html' %}
-        
-    <!-- Checkout Modal -->
-    <div id="checkout-modal" class="modal">
-        <div class="modal-content checkout-modal">
-            <div class="modal-header">
-                <h2>Checkout</h2>
-                <span class="close-modal">&times;</span>
-            </div>
-            
-            <div class="checkout-container">
-                <form id="checkout-form" onsubmit="processOrder(event)">
-                    <!-- Shipping Information -->
-                    <div class="checkout-section">
-                        <h3>Shipping Information</h3>
-                        <div class="form-group">
-                            <input type="text" id="fullName" required placeholder="Full Name">
-                        </div>
-                        <div class="form-group">
-                            <input type="email" id="email" required placeholder="Email">
-                        </div>
-                        <div class="form-group">
-                            <input type="text" id="address" required placeholder="Address">
-                        </div>
-                        <div class="form-row">
-                            <input type="text" id="city" required placeholder="City">
-                            <input type="text" id="postalCode" required placeholder="Postal Code">
-                        </div>
-                    </div>
-
-                    <!-- Payment Information -->
-                    <div class="checkout-section payment">
-                        <h3>Payment Information</h3>
-                        <div class="card-input-wrapper">
-                            <div class="card-input">
-                                <input type="text" id="cardNumber" required placeholder="Card Number" maxlength="19">
-                                <div class="card-icons">
-                                    <i class="fab fa-cc-visa" data-card="visa"></i>
-                                    <i class="fab fa-cc-mastercard" data-card="mastercard"></i>
-                                    <i class="fab fa-cc-amex" data-card="amex"></i>
-                                </div>
-                            </div>
-                            <div class="error-message">Please enter a valid card number</div>
-                        </div>
-                        
-                        <div class="payment-small-inputs">
-                            <div class="form-group">
-                                <input type="text" id="expiry" required placeholder="MM/YY" maxlength="5">
-                                <div class="error-message">Invalid date</div>
-                            </div>
-                            <div class="form-group">
-                                <input type="text" id="cvv" required placeholder="CVV" maxlength="4">
-                                <div class="error-message">Invalid CVV</div>
-                            </div>
-                        </div>
-                        
-                        <div class="form-group">
-                            <input type="text" id="cardName" required placeholder="Name on Card">
-                            <div class="error-message">Please enter the name on your card</div>
-                        </div>
-                        
-                        <div class="secure-badge">
-                            <i class="fas fa-lock"></i>
-                            <span>Secure 256-bit SSL encrypted payment</span>
-                        </div>
-                    </div>
-
-                    <!-- Order Summary -->
-                    <div class="checkout-section">
-                        <h3>Order Summary</h3>
-                        <div id="checkout-items" class="checkout-items"></div>
-                        <div class="checkout-summary">
-                            <div class="summary-row">
-                                <span>Subtotal</span>
-                                <span id="checkout-subtotal">$0.00</span>
-                            </div>
-                            <div class="summary-row">
-                                <span>Shipping</span>
-                                <span id="checkout-shipping">$0.00</span>
-                            </div>
-                            <div class="summary-row">
-                                <span>Tax (10%)</span>
-                                <span id="checkout-tax">$0.00</span>
-                            </div>
-                            <div class="summary-row total">
-                                <span>Total</span>
-                                <span id="checkout-total">$0.00</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <button type="submit" class="place-order-btn">Place Order</button>
-                </form>
-            </div>
-        </div>
-    </div>
 
 <!-- Footer -->
         <footer>
@@ -273,7 +70,6 @@
                         <div class="payment-methods">
                             <i class="fab fa-cc-visa"></i>
                             <i class="fab fa-cc-mastercard"></i>
-                            <i class="fab fa-cc-amex"></i>
                             <i class="fab fa-cc-paypal"></i>
                         </div>
                     </div>
@@ -284,8 +80,5 @@
             </div>
         </footer>
         {% endblock %}
-        
-        <script src="{% static 'javascript/script.js' %}"></script>
-        <script src="{% static 'javascript/auth.js' %}"></script>
     </body>
     </html>

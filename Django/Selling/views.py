@@ -12,7 +12,7 @@ def login_user(request):
         if user is not None:
             login(request, user)
             messages.success(request, "Login successful!")
-            return redirect('index')  # Redirect to the index page or another success page
+            return redirect('base')  # Redirect to the index page or another success page
         else:
             messages.error(request, "Invalid username or password.")
             return redirect('login')  # Redirect back to the login page
@@ -20,5 +20,5 @@ def login_user(request):
         return render(request, 'login.html')  # Render the login page for GET requests
 
 def index(request):
-    return render(request, 'index.html')
+    return render(request, 'base.html')
 

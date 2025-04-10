@@ -1,23 +1,24 @@
-
-
-                <!-- Login Form -->
-<form action="" method="post">
+{% load static %}
+<form action="" method="post" class="container mt-5">
     {% csrf_token %}
-    <div id="login-form" class="auth-form">
-        <div class="social-auth">
-            <form>
-                <div class="mb-3">
-                    <label for="exampleInputEmail1" class="form-label">User Name</label>
-                    <input type="text" class="form-control" name="username" aria-describedby="emailHelp">
-                </div>
-                <div class="mb-3">
-                    <label for="exampleInputPassword1" class="form-label">Password</label>
-                        <input type="password" class="form-control" name="password">
-                </div>
-                <button type="submit" class="btn btn-primary">Submit</button>
-            </form>
-        </div>                    
+    <div id="login-form" class="auth-form card shadow-lg p-4 rounded">
+        <div class="card-body">
+            <h2 class="card-title text-center mb-4">Login</h2>
+            <div class="social-auth">
+                <form>
+                    <div class="mb-3">
+                        <label for="username" class="form-label">User Name</label>
+                        <input type="text" class="form-control form-control-lg" id="username" name="username" aria-describedby="usernameHelp" placeholder="Enter your username">
+                    </div>
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Password</label>
+                        <input type="password" class="form-control form-control-lg" id="password" name="password" placeholder="Enter your password">
+                    </div>
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary btn-lg">Login</button>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
 </form>
-
-              
