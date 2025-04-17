@@ -10,6 +10,8 @@
  * Copyright 2011-2022 Twitter, Inc.
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/main/LICENSE)
  */
+
+
 :root {
   --bs-blue: #0d6efd;
   --bs-indigo: #6610f2;
@@ -4176,6 +4178,14 @@ textarea.form-control-lg {
   background-clip: border-box;
   border: var(--bs-card-border-width) solid var(--bs-card-border-color);
   border-radius: var(--bs-card-border-radius);
+  transition: transform 0.2s ease-in-out; 
+}
+.card:hover {
+  transform: scale(1.15);
+}
+.card:focus, .card:focus-within {
+  outline: 0;
+  box-shadow: 0 0 0 var(--bs-card-border-width) var(--bs-card-border-color);
 }
 .card > hr {
   margin-right: 0;
@@ -4280,6 +4290,7 @@ textarea.form-control-lg {
 .card-img-top {
   border-top-left-radius: var(--bs-card-inner-border-radius);
   border-top-right-radius: var(--bs-card-inner-border-radius);
+  border: 1px solid #000000;
 }
 
 .card-img,
@@ -8152,6 +8163,16 @@ textarea.form-control-lg {
 .bg-danger {
   --bs-bg-opacity: 1;
   background-color: rgba(var(--bs-danger-rgb), var(--bs-bg-opacity)) !important;
+}
+
+.bg-blue {
+  --bs-bg-opacity: 1;
+  background-color: rgb(225, 244, 255) !important; /* Pure blue: Red=0, Green=0, Blue=255 */
+}
+
+.bg-gray {
+  --bs-bg-opacity: 1;
+  background-color: rgb(249, 249, 249) !important; /* Pure blue: Red=0, Green=0, Blue=255 */
 }
 
 .bg-light {
