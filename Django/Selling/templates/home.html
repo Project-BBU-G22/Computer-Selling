@@ -4,11 +4,11 @@
 {% block content %}
     <body>
         <!-- Header-->
-        <header class="bg-dark py-1">
+        <header class="bg-gray py-1">
             <div class="container px-4 px-lg-5 my-5">
-                <div class="text-center text-white">
+                <div class="text-center text-dark">
                     <h1 class="display-4 fw-bolder">Shop in style</h1>
-                    <p class="lead fw-normal text-white-50 mb-0">With this shop hompeage template</p>
+                    <p class="lead fw-normal text-dark-50 mb-0">With this shop hompeage template</p>
                 </div>
             </div>
         </header>
@@ -20,20 +20,22 @@
                     {% for Product in Products %}
                     {% if Product.category.name == 'ASUS' %}
                     <div class="col mb-5">
-                        <div class="card h-100 bg-gray">
+                        <div class="card h-100 bg-light">
                             <!-- Product image-->  
                             <img class="card-img-top card-img-bottom" src="{{ Product.image.url }}" alt="..." />
                             <!-- Product details-->
                             <div class="card-body p-4">
                                 <div class="text-center">
-                                    <!-- Product name-->
+                                    <!--Product category-->
                                     <h5 class="fw-bolder">{{ Product.category.name }}</h5>
-                                    <!-- Product price-->
+                                    <!-- Product name-->
                                     <h5 class="fw-bolder">{{ Product.name }}</h5>
-                                    <br/>
-                                    $ {{ Product.price }}
-                                    <br/>
-                                    {{ Product.description }}
+                                    <!-- Product price-->
+                                    <h5 class="fw-bolder">$ {{ Product.price }}</h5>
+                                </div>
+                                <br/>
+                                <div class="text-right">
+                                    {{ Product.description|linebreaks }}
                                 </div>
                             </div>
                             <!-- Product actions-->
@@ -50,20 +52,22 @@
                 {% for Product in Products %}
                 {% if Product.category.name == 'LENOVO' %}
                 <div class="col mb-5">
-                    <div class="card h-100 bg-gray">
+                    <div class="card h-100 bg-light">
                         <!-- Product image-->  
                         <img class="card-img-top card-img-bottom" src="{{ Product.image.url }}" alt="..." />
                         <!-- Product details-->
                         <div class="card-body p-4">
                             <div class="text-center">
-                                <!-- Product name-->
+                                <!--Product category-->
                                 <h5 class="fw-bolder">{{ Product.category.name }}</h5>
-                                <!-- Product price-->
+                                <!-- Product name-->
                                 <h5 class="fw-bolder">{{ Product.name }}</h5>
-                                <br/>
-                                $ {{ Product.price }}
-                                <br/>
-                                {{ Product.description }}
+                                <!-- Product price-->
+                                <h5 class="fw-bolder">$ {{ Product.price }}</h5>
+                            </div>
+                            <br/>
+                            <div class="text-right">
+                                {{ Product.description|linebreaks }}
                             </div>
                         </div>
                         <!-- Product actions-->
