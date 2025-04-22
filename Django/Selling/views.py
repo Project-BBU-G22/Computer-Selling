@@ -27,7 +27,7 @@ def login_user(request):
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
-            messages.success(request, ("You have been logged in successfully."))
+            messages.success(request, ("You have been logged in successfully..."))
             # Redirect to home page after login
             return redirect('home')
         else:
@@ -40,7 +40,7 @@ def login_user(request):
 # Logout page view
 def logout_user(request):
     logout(request)
-    messages.success(request, ("You have been logged out successfully."))
+    messages.success(request, ("You have been logged out successfully..."))
     # Redirect to home page after logout
     return redirect('home')
 

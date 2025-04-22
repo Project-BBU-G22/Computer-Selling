@@ -10,17 +10,14 @@ class SignUpForm(UserCreationForm):
     email = forms.EmailField(
         max_length=254,
         required=True,
-        help_text='Required. Please enter a valid email address.'
     )
     first_name = forms.CharField(
         max_length=150,
         required=True,
-        help_text='Required. Please enter your first name.'
     )
     last_name = forms.CharField(
         max_length=150,
         required=True,
-        help_text='Required. Please enter your last name.'
     )
 
     class Meta(UserCreationForm.Meta):
