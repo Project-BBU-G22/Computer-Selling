@@ -27,7 +27,7 @@
         <!-- Navigation-->
         <nav class="navbar navbar-expand-lg navbar-light bg-dark">
             <div class="container px-4 px-lg-5">
-                <a class="navbar-brand  text-white" href="{% url 'home' %}"><h3>BBU</h3></a>
+                <a class="navbar-brand  text-white" href="{% url 'home' %}"><h4>BBU</h4></a>
                 <button class="navbar-toggler bg-light" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
@@ -41,7 +41,11 @@
                             <ul class="navbar-nav">
                             <li class="nav-item dropdown">
                                 <button class="btn btn-dark dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                                  Brand
+                                {% if category %}
+                                    {{ category }}
+                                {% else %}
+                                    All Products
+                                {% endif %}
                                 </button>
                                 <ul class="dropdown-menu dropdown-menu-dark">
                                     <li><a class="dropdown-item" href="{% url 'home' %}"><h6>All Products</h6></a></li>
@@ -70,8 +74,7 @@
                     <!-- Button trigger modal -->
                     <button  class="btn btn-outline-light" type="submit" data-bs-toggle="modal" data-bs-target="#exampleModal">
                         <i class="bi bi-person-circle"> {{ user.username }}</i>
-                    </button>
-                            
+                    </button>     
                     <!-- Modal -->
                         <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                             <div class="modal-dialog modal-dialog-centered">
@@ -96,6 +99,9 @@
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                                         <a class="btn btn-danger" href="{% url 'logout' %}">Logout</a>
+                                        {% if user.is_authenticated and user.is_staff %}
+                                        <a class="btn btn-danger" href="{% url 'admin:index' %}">Admin Panel</a>
+                                        {% endif %}
                                     </div>
                                 </div>
                             </div>

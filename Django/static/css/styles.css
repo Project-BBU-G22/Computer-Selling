@@ -4223,7 +4223,7 @@ textarea.form-control-lg {
   border-radius: 15px;
 }
 .card:hover {
-  transform: scale(1.1);
+  transform: scale(1.05);
 }
 .card:focus, .card:focus-within {
   outline: 0;
