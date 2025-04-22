@@ -2,6 +2,11 @@ from django.shortcuts import render, redirect
 from .models import Product, Category
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
+from django.shortcuts import render, redirect
+from django.contrib.auth import login
+from .forms import SignUpForm 
+
+
 
 # Home page view
 def home(request):
@@ -49,3 +54,15 @@ def category(request, foo):
         'Categories': categories,
         'category': foo,  # Pass the selected category name
     })
+
+# Register page view
+def register_user(request):
+    if request.method == 'POST':
+        form = SignUpForm(request.POST)
+        if form.is_valid():
+            user = form.save() # Save the user using the overridden save method
+            login(request, user) # Optional: Log the user in immediately after signup
+            return redirect('home') # Redirect to a success page (e.g., home)
+    else:
+        form = SignUpForm() # Create an empty form for GET requests
+    return render(request, 'register.html', {'form': form})

@@ -20,6 +20,7 @@ html, body {
   flex-grow: 1;
 }
 
+
 :root {
   --bs-blue: #0d6efd;
   --bs-indigo: #6610f2;
