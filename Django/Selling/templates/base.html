@@ -15,11 +15,11 @@
         <!-- Core theme CSS (includes Bootstrap)-->
         <link href="{% static 'css/styles.css' %}" rel="stylesheet" />
     </head>
-    <body>
+    <body class="d-flex flex-column min-vh-100">
         <!-- Navigation-->
         <nav class="navbar navbar-expand-lg navbar-light bg-dark">
             <div class="container px-4 px-lg-5">
-                <a class="navbar-brand  text-white" href="{% url 'home' %}">BBU</a>
+                <a class="navbar-brand  text-white" href="{% url 'home' %}"><h3>BBU</h3></a>
                 <button class="navbar-toggler bg-light" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
@@ -28,16 +28,52 @@
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle text-white" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Brand</a>
                             <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                <li><a class="dropdown-item" href="#">All Products</a></li>
+                                <li><a class="dropdown-item" href="{% url 'home' %}">All Products</a></li>
                                 <li><hr class="dropdown-divider" /></li>
-                                <li><a class="dropdown-item" href="#">Popular Items</a></li>
-                                <li><a class="dropdown-item" href="#">New Arrivals</a></li>
+                                <li><a class="dropdown-item" href="{% url 'category' 'ASUS' %}">ASUS</a></li>
+                                <li><a class="dropdown-item" href="{% url 'category' 'LENOVO' %}">LENOVO</a></li>
+                                <li><a class="dropdown-item" href="{% url 'category' 'MAC' %}">MAC</a></li>
+                                <li><a class="dropdown-item" href="{% url 'category' 'DELL' %}">DELL</a></li>
+                                <li><a class="dropdown-item" href="{% url 'category' 'ACER' %}">ACER</a></li>
+                                <li><a class="dropdown-item" href="{% url 'category' 'MAC' %}">MAC</a></li>
+                                <li><a class="dropdown-item" href="{% url 'category' 'MSI' %}">MSI</a></li>
 
                             </ul>
                             {% if user.is_authenticated %}
-                            <li class="nav-item"><a class="nav-link text-white" href="{% url 'logout' %}">Logout</a></li>
+                            <li class="nav-item">
+                                <!-- Button trigger modal -->
+                                <button  class="btn btn-outline-light" type="submit" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                                    <i class="bi bi-person-circle"> {{ user.username }}</i>
+                                </button>
+                                
+                                <!-- Modal -->
+                                <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                        <h1 class="modal-title fs-5" id="exampleModalLabel">User Information</h1>
+                                        </div>
+                                        <center>
+                                            <div class="modal-body">
+                                                <i class="bi bi-person-circle" style="font-size: 5rem;"></i>
+                                                </br>
+                                                {{ user.username }}
+                                            </div>
+                                        </center>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                            <a class="btn btn-danger text-white" href="{% url 'logout' %}">Logout</a>
+                                        </div>
+                                    </div>
+                                    </div>
+                                </div>
+                            </li>
                             {% else %}
-                            <li class="nav-item"><a class="nav-link text-white" href="{% url 'login' %}">Login</a></li>
+                            <li class="nav-item">
+                                <a class="btn btn-outline-light" href="{% url 'login' %}">
+                                    <i class="bi bi-person-circle"></i> Login
+                                </a>
+                            </li>
                             {% endif %}
                         </li>
                     </ul>
@@ -51,18 +87,17 @@
                 </div>
             </div>
         </nav>
-        {% if messages %}
-            {% for message in messages %}
-            <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                {{ message }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-            {% endfor %}
-        {% endif %}
 
+            {% if messages %}
+                {% for message in messages %}
+                <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                    {{ message }}
+                </div>
+                {% endfor %}
+            {% endif %}
+            
         {% block content %}
         {% endblock %}
-
         <!-- Footer-->
         <footer class="py-5 bg-dark">
             <div class="container"><p class="m-0 text-center text-white">Copyright &copy; Your Website 2023</p></div>
@@ -71,5 +106,16 @@
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
         <!-- Core theme JS-->
         <script src="{% static 'js/scripts.js' %}"></script>
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                const alerts = document.querySelectorAll('.alert');
+                alerts.forEach(function (alert) {
+                    setTimeout(function () {
+                        const bsAlert = new bootstrap.Alert(alert);
+                        bsAlert.close();
+                    }, 1000); // 2000ms = 2 seconds
+                });
+            });
+        </script>
     </body>
 </html>

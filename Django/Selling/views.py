@@ -38,3 +38,14 @@ def logout_user(request):
     messages.success(request, ("You have been logged out successfully."))
     # Redirect to home page after logout
     return redirect('home')
+
+# Category page view
+def category(request, foo):
+    # Fetch products based on the selected category
+    products = Product.objects.filter(category__name=foo)
+    categories = Category.objects.all()
+    return render(request, 'category.html', {
+        'Products': products,
+        'Categories': categories,
+        'category': foo,  # Pass the selected category name
+    })
