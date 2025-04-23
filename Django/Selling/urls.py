@@ -4,7 +4,7 @@ from django.contrib import admin
 
 urlpatterns = [
     path('', views.home, name='home'),
-    path('admin/', admin.site.urls),
+    path('workspace/', views.workspace, name='workspace'),
     path('about/', views.about, name='about'),
     path('login/', views.login_user, name='login'),
     path('logout/', views.logout_user, name='logout'),

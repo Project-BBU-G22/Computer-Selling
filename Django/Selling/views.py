@@ -66,3 +66,10 @@ def register_user(request):
     else:
         form = SignUpForm() # Create an empty form for GET requests
     return render(request, 'register.html', {'form': form})
+
+# Workspace page view
+def workspace(request):
+    # Fetch all products and categories from the database
+    products = Product.objects.all()
+    categories = Category.objects.all()
+    return render(request, 'workspace.html', {'Products': products, 'Categories': categories})
