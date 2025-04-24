@@ -5,6 +5,8 @@ from django.contrib import messages
 from django.shortcuts import render, redirect
 from django.contrib.auth import login
 from .forms import SignUpForm 
+from django.contrib.auth.decorators import user_passes_test
+from django.core.paginator import Paginator
 
 
 
@@ -31,7 +33,7 @@ def login_user(request):
             # Redirect to home page after login
             return redirect('home')
         else:
-            messages.success(request, ("Invalid username or password."))
+            messages.error(request, ("Invalid username or password"))
             # Corrected redirect to the login page
             return redirect('login')
     else:
@@ -72,4 +74,82 @@ def workspace(request):
     # Fetch all products and categories from the database
     products = Product.objects.all()
     categories = Category.objects.all()
-    return render(request, 'workspace.html', {'Products': products, 'Categories': categories})
+    
+    # Pagination
+    paginator = Paginator(products, 12)  # Show 12 products per page
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    
+    return render(request, 'workspace.html', {
+        'Products': page_obj,
+        'Categories': categories,
+        'page_obj': page_obj,
+    })
+
+def is_staff(user):
+    return user.is_authenticated and user.is_staff
+
+@user_passes_test(is_staff)
+def add_category(request):
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        if name:
+            Category.objects.create(name=name)
+            messages.success(request, f'Category "{name}" has been added successfully!')
+        else:
+            messages.error(request, 'Category name is required!')
+    return redirect('workspace')
+
+@user_passes_test(is_staff)
+def add_product(request):
+    if request.method == 'POST':
+        try:
+            name = request.POST.get('name')
+            category_id = request.POST.get('category')
+            price = request.POST.get('price')
+            description = request.POST.get('description')
+            image = request.FILES.get('image')
+
+            if all([name, category_id, price, description, image]):
+                category = Category.objects.get(id=category_id)
+                Product.objects.create(
+                    name=name,
+                    category=category,
+                    price=price,
+                    description=description,
+                    image=image
+                )
+                messages.success(request, f'Product "{name}" has been added successfully!')
+            else:
+                messages.error(request, 'All fields are required!')
+        except Exception as e:
+            messages.error(request, f'Error adding product: {str(e)}')
+    return redirect('workspace')
+
+@user_passes_test(is_staff)
+def delete_category(request, category_id):
+    if request.method == 'POST':
+        try:
+            category = Category.objects.get(id=category_id)
+            category_name = category.name
+            category.delete()
+            messages.success(request, f'Category "{category_name}" has been deleted successfully!')
+        except Category.DoesNotExist:
+            messages.error(request, 'Category not found!')
+        except Exception as e:
+            messages.error(request, f'Error deleting category: {str(e)}')
+    return redirect('workspace')
+
+@user_passes_test(is_staff)
+def delete_product(request, product_id):
+    if request.method == 'POST':
+        try:
+            product = Product.objects.get(id=product_id)
+            product_name = product.name
+            product.delete()
+            messages.success(request, f'Product "{product_name}" has been deleted successfully!')
+        except Product.DoesNotExist:
+            messages.error(request, 'Product not found!')
+        except Exception as e:
+            messages.error(request, f'Error deleting product: {str(e)}')
+    return redirect('workspace')
