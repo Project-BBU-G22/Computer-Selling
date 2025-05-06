@@ -73,7 +73,7 @@ deactivate
 
 <div align="center">
 
-# Enjoy The Project
+# Enjoy 
 
 <!---  <img height="300" src="https://i.imgflip.com/65efzo.gif"  />  --->
 <img height="300" width="700" src="https://i.pinimg.com/originals/43/5f/6d/435f6d95a347985d8796b4943a1d7b1c.gif"  /> 
