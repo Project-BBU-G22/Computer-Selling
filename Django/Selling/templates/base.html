@@ -46,7 +46,7 @@
                             <a class="nav-link active text-white" aria-current="page" href="{% url 'home' %}">Home</a>
                         </li>
                         <li class="nav-item">
-                             <a class="nav-link text-white" href="{% url 'about' %}">About</a>
+                            <a class="nav-link text-white" href="{% url 'about' %}">About</a>
                         </li>
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropdownProducts" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -68,54 +68,60 @@
                             </ul>
                         </li>
                     </ul>
-                    <ul class="navbar-nav ms-auto mb-2 mb-lg-0"> <li class="nav-item me-2"> <form class="d-flex">
-                                <a class="btn btn-outline-light" href="#"> <i class="bi-cart-fill me-1"></i>
-                                    Cart
-                                    <span class="badge bg-dark text-white ms-1 rounded-pill">0</span> </a>
-                            </form>
-                         </li>
-        
+                    <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                        <li class="nav-item me-2">
+                            <a class="btn btn-outline-light" href="{% url 'view_cart' %}">
+                                <i class="bi-cart-fill me-1"></i>
+                                Cart
+                                <span class="badge bg-dark text-white ms-1 rounded-pill">
+                                    {% with cart_count=user.cart_set.count %}
+                                        {{ cart_count }}
+                                    {% endwith %}
+                                </span>
+                            </a>
+                        </li>
                         {% if user.is_authenticated %}
-                        <li class="nav-item">
-                            <button class="btn btn-outline-light" type="button" data-bs-toggle="modal" data-bs-target="#exampleModal">
-                                <i class="bi bi-person-circle"></i> {{ user.username }}
-                            </button>
-                            <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                <div class="modal-dialog modal-dialog-centered">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h1 class="modal-title fs-5" id="exampleModalLabel">User Information</h1>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                        </div>
-                                        <div class="modal-body text-center">
-                                            <i class="bi bi-person-circle" style="font-size: 7rem;"></i>
-                                            <div class="mt-3 text-start" style="padding-left: 2rem;">
-                                                <h4>Username</h4>
-                                                <p style="font-size: 1.25rem;">{% if user.username %}{{ user.username }}{% else %}Null{% endif %}</p>
-                                                <h4>First Name</h4>
-                                                <p style="font-size: 1.25rem;">{% if user.first_name %}{{ user.first_name }}{% else %}Null{% endif %}</p>
-                                                <h4>Last Name</h4>
-                                                <p style="font-size: 1.25rem;">{% if user.last_name %}{{ user.last_name }}{% else %}Null{% endif %}</p>
-                                                <h4>Email</h4>
-                                                <p style="font-size: 1.25rem;">{% if user.email %}{{ user.email }}{% else %}Null{% endif %}</p>
+                            <li class="nav-item">
+                                <button class="btn btn-outline-light" type="button" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                                    <i class="bi bi-person-circle"></i> {{ user.username }}
+                                </button>
+                                <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h1 class="modal-title fs-5" id="exampleModalLabel">User Information</h1>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                             </div>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                            <a class="btn btn-danger" href="{% url 'logout' %}">Logout</a>
-                                            {% if user.is_authenticated and user.is_staff %}
-                                            <a class="btn btn-primary" href="{% url 'workspace' %}">Workspace</a> {% endif %}
+                                            <div class="modal-body text-center">
+                                                <i class="bi bi-person-circle" style="font-size: 7rem;"></i>
+                                                <div class="mt-3 text-start" style="padding-left: 2rem;">
+                                                    <h4>Username</h4>
+                                                    <p style="font-size: 1.25rem;">{% if user.username %}{{ user.username }}{% else %}Null{% endif %}</p>
+                                                    <h4>First Name</h4>
+                                                    <p style="font-size: 1.25rem;">{% if user.first_name %}{{ user.first_name }}{% else %}Null{% endif %}</p>
+                                                    <h4>Last Name</h4>
+                                                    <p style="font-size: 1.25rem;">{% if user.last_name %}{{ user.last_name }}{% else %}Null{% endif %}</p>
+                                                    <h4>Email</h4>
+                                                    <p style="font-size: 1.25rem;">{% if user.email %}{{ user.email }}{% else %}Null{% endif %}</p>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                <a class="btn btn-danger" href="{% url 'logout' %}">Logout</a>
+                                                {% if user.is_authenticated and user.is_staff %}
+                                                <a class="btn btn-primary" href="{% url 'workspace' %}">Workspace</a>
+                                                {% endif %}
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        </li>
+                            </li>
                         {% else %}
-                        <li class="nav-item">
-                            <a class="btn btn-outline-light" href="{% url 'login' %}">
-                                <i class="bi bi-person-circle"></i> Login
-                            </a>
-                        </li>
+                            <li class="nav-item">
+                                <a class="btn btn-outline-light" href="{% url 'login' %}">
+                                    <i class="bi bi-person-circle"></i> Login
+                                </a>
+                            </li>
                         {% endif %}
                     </ul>
                 </div>

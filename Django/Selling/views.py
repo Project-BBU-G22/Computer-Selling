@@ -1,5 +1,5 @@
-from django.shortcuts import render, redirect
-from .models import Product, Category
+from django.shortcuts import render, redirect, get_object_or_404
+from .models import Product, Category, Cart
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.shortcuts import render, redirect
@@ -153,3 +153,85 @@ def delete_product(request, product_id):
         except Exception as e:
             messages.error(request, f'Error deleting product: {str(e)}')
     return redirect('workspace')
+
+@user_passes_test(is_staff)
+def edit_product(request, product_id):
+    if request.method == 'POST':
+        try:
+            product = Product.objects.get(id=product_id)
+            product.name = request.POST.get('name')
+            category_id = request.POST.get('category')
+            product.category = Category.objects.get(id=category_id)
+            product.price = request.POST.get('price')
+            product.description = request.POST.get('description')
+            
+            # Handle image update if a new image is provided
+            new_image = request.FILES.get('image')
+            if new_image:
+                product.image = new_image
+            
+            product.save()
+            messages.success(request, f'Product "{product.name}" has been updated successfully!')
+        except Product.DoesNotExist:
+            messages.error(request, 'Product not found!')
+        except Category.DoesNotExist:
+            messages.error(request, 'Category not found!')
+        except Exception as e:
+            messages.error(request, f'Error updating product: {str(e)}')
+    return redirect('workspace')
+
+def add_to_cart(request, product_id):
+    if not request.user.is_authenticated:
+        messages.error(request, "Please login to add items to cart")
+        return redirect('login')
+    
+    product = get_object_or_404(Product, id=product_id)
+    cart_item, created = Cart.objects.get_or_create(
+        user=request.user,
+        product=product,
+        defaults={'quantity': 1}
+    )
+    
+    if not created:
+        cart_item.quantity += 1
+        cart_item.save()
+    
+    messages.success(request, f"{product.name} added to cart")
+    return redirect(request.META.get('HTTP_REFERER', 'home'))
+
+def view_cart(request):
+    if not request.user.is_authenticated:
+        messages.error(request, "Please login to view your cart")
+        return redirect('login')
+    
+    cart_items = Cart.objects.filter(user=request.user)
+    total_price = sum(item.get_total_price() for item in cart_items)
+    
+    return render(request, 'cart.html', {
+        'cart_items': cart_items,
+        'total_price': total_price
+    })
+
+def update_cart(request, cart_id):
+    if not request.user.is_authenticated:
+        return redirect('login')
+    
+    cart_item = get_object_or_404(Cart, id=cart_id, user=request.user)
+    quantity = int(request.POST.get('quantity', 1))
+    
+    if quantity > 0:
+        cart_item.quantity = quantity
+        cart_item.save()
+    else:
+        cart_item.delete()
+    
+    return redirect('view_cart')
+
+def remove_from_cart(request, cart_id):
+    if not request.user.is_authenticated:
+        return redirect('login')
+    
+    cart_item = get_object_or_404(Cart, id=cart_id, user=request.user)
+    cart_item.delete()
+    messages.success(request, "Item removed from cart")
+    return redirect('view_cart')

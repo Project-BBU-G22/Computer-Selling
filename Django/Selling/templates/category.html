@@ -1,4 +1,3 @@
-
 {% extends 'base.html' %}
 {% load static %}
 {% block content %}
@@ -41,14 +40,15 @@
                             <!-- Product actions-->
                             <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
                                 <div class="d-flex justify-content-end">
-                                    <a class="btn btn-outline-dark mt-auto" href="#">Add to cart</a>
+                                    <a href="{% url 'add_to_cart' Product.id %}" class="btn btn-outline-dark mt-auto">
+                                        <i class="bi bi-cart-plus"></i> Add to Cart
+                                    </a>
                                 </div>
                             </div>
                         </div>
                     </div>
                     {% endif %}
                 {% endfor %}
-
 
                 </div>
             </div>
