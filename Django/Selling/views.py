@@ -5,8 +5,9 @@ from django.contrib import messages
 from django.shortcuts import render, redirect
 from django.contrib.auth import login
 from .forms import SignUpForm 
-from django.contrib.auth.decorators import user_passes_test
+from django.contrib.auth.decorators import user_passes_test, login_required
 from django.core.paginator import Paginator
+from django.http import HttpResponseForbidden
 
 
 
@@ -69,22 +70,29 @@ def register_user(request):
         form = SignUpForm() # Create an empty form for GET requests
     return render(request, 'register.html', {'form': form})
 
-# Workspace page view
-def workspace(request):
-    # Fetch all products and categories from the database
-    products = Product.objects.all()
-    categories = Category.objects.all()
-    
-    # Pagination
-    paginator = Paginator(products, 12)  # Show 12 products per page
-    page_number = request.GET.get('page')
-    page_obj = paginator.get_page(page_number)
-    
-    return render(request, 'workspace.html', {
-        'Products': page_obj,
-        'Categories': categories,
-        'page_obj': page_obj,
-    })
+@login_required
+def workspace_view(request):
+    # Check if user has permission to edit workspace
+    if request.user.has_perm('Selling.edit_workspace'):
+        # Original workspace view logic here
+        products = Product.objects.all()
+        categories = Category.objects.all()
+        
+        # Pagination
+        paginator = Paginator(products, 12)  # Show 12 products per page
+        page_number = request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
+        
+        return render(request, 'workspace.html', {
+            'Products': page_obj,
+            'Categories': categories,
+            'page_obj': page_obj,
+        })
+    else:
+        # User doesn't have permission
+        return render(request, 'permission_denied.html', {
+            'message': "You don't have permission to access this workspace."
+        })
 
 def is_staff(user):
     return user.is_authenticated and user.is_staff
@@ -235,3 +243,26 @@ def remove_from_cart(request, cart_id):
     cart_item.delete()
     messages.success(request, "Item removed from cart")
     return redirect('view_cart')
+
+def checkout(request):
+    if not request.user.is_authenticated:
+        messages.error(request, "Please login to proceed to checkout")
+        return redirect('login')
+
+    cart_items = Cart.objects.filter(user=request.user)
+    total_price = sum(item.get_total_price() for item in cart_items)
+
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        address = request.POST.get('address')
+        phone = request.POST.get('phone')
+        # Here you would create an Order and clear the cart, etc.
+        # For now, just show a success message and redirect to home
+        messages.success(request, 'Order placed successfully!')
+        cart_items.delete()
+        return redirect('home')
+
+    return render(request, 'checkout.html', {
+        'cart_items': cart_items,
+        'total_price': total_price
+    })

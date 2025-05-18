@@ -4,7 +4,7 @@ from django.contrib import admin
 
 urlpatterns = [
     path('', views.home, name='home'),
-    path('workspace/', views.workspace, name='workspace'),
+    path('workspace/', views.workspace_view, name='workspace'),
     path('about/', views.about, name='about'),
     path('login/', views.login_user, name='login'),
     path('logout/', views.logout_user, name='logout'),
@@ -19,4 +19,5 @@ urlpatterns = [
     path('cart/', views.view_cart, name='view_cart'),
     path('update-cart/<int:cart_id>/', views.update_cart, name='update_cart'),
     path('remove-from-cart/<int:cart_id>/', views.remove_from_cart, name='remove_from_cart'),
+    path('checkout/', views.checkout, name='checkout'),
 ]
