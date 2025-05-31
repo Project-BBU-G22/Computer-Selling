@@ -20,6 +20,8 @@ SECRET_KEY = 'django-insecure-m)j)ioc+npl82&0f8+q-nj!5k718u1u2_nn$%_7p$k^l)66h7*
 DEBUG = True
 
 ALLOWED_HOSTS = ['*']
+# settings.py
+CSRF_TRUSTED_ORIGINS = ['https://bbu-d104-g3.thavrak-lab.xyz', 'http://your-other-domain.com']
 
 
 # Application definition
