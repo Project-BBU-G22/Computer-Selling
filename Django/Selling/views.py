@@ -5,9 +5,10 @@ from django.contrib import messages
 from django.shortcuts import render, redirect
 from django.contrib.auth import login
 from .forms import SignUpForm 
-from django.contrib.auth.decorators import user_passes_test, login_required
+from django.contrib.auth.decorators import user_passes_test, login_required, permission_required
 from django.core.paginator import Paginator
 from django.http import HttpResponseForbidden
+from django.core.exceptions import PermissionDenied
 
 
 
@@ -70,34 +71,24 @@ def register_user(request):
         form = SignUpForm() # Create an empty form for GET requests
     return render(request, 'register.html', {'form': form})
 
-@login_required
+@user_passes_test(lambda u: u.is_authenticated and u.is_staff)
 def workspace_view(request):
-    # Check if user has permission to edit workspace
-    if request.user.has_perm('Selling.edit_workspace'):
-        # Original workspace view logic here
-        products = Product.objects.all()
-        categories = Category.objects.all()
-        
-        # Pagination
-        paginator = Paginator(products, 12)  # Show 12 products per page
-        page_number = request.GET.get('page')
-        page_obj = paginator.get_page(page_number)
-        
-        return render(request, 'workspace.html', {
-            'Products': page_obj,
-            'Categories': categories,
-            'page_obj': page_obj,
-        })
-    else:
-        # User doesn't have permission
-        return render(request, 'permission_denied.html', {
-            'message': "You don't have permission to access this workspace."
-        })
+    # All staff users can access the workspace
+    products = Product.objects.all()
+    categories = Category.objects.all()
+    
+    # Pagination
+    paginator = Paginator(products, 12)  # Show 12 products per page
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    
+    return render(request, 'workspace.html', {
+        'Products': page_obj,
+        'Categories': categories,
+        'page_obj': page_obj,
+    })
 
-def is_staff(user):
-    return user.is_authenticated and user.is_staff
-
-@user_passes_test(is_staff)
+@permission_required('Selling.add_category', raise_exception=True)
 def add_category(request):
     if request.method == 'POST':
         name = request.POST.get('name')
@@ -108,10 +99,10 @@ def add_category(request):
             messages.error(request, 'Category name is required!')
     return redirect('workspace')
 
-@user_passes_test(is_staff)
+@permission_required('Selling.add_product', raise_exception=True)
 def add_product(request):
-    if request.method == 'POST':
-        try:
+    try:
+        if request.method == 'POST':
             name = request.POST.get('name')
             category_id = request.POST.get('category')
             price = request.POST.get('price')
@@ -130,62 +121,87 @@ def add_product(request):
                 messages.success(request, f'Product "{name}" has been added successfully!')
             else:
                 messages.error(request, 'All fields are required!')
-        except Exception as e:
-            messages.error(request, f'Error adding product: {str(e)}')
+    except PermissionDenied:
+        return render(request, 'permission_denied_popup.html', {
+            'message': "You don't have permission to add products."
+        })
+    except Exception as e:
+        messages.error(request, f'Error adding product: {str(e)}')
     return redirect('workspace')
 
-@user_passes_test(is_staff)
+@permission_required('Selling.delete_category', raise_exception=True)
 def delete_category(request, category_id):
-    if request.method == 'POST':
-        try:
-            category = Category.objects.get(id=category_id)
-            category_name = category.name
-            category.delete()
-            messages.success(request, f'Category "{category_name}" has been deleted successfully!')
-        except Category.DoesNotExist:
-            messages.error(request, 'Category not found!')
-        except Exception as e:
-            messages.error(request, f'Error deleting category: {str(e)}')
+    try:
+        if request.method == 'POST':
+            try:
+                category = Category.objects.get(id=category_id)
+                category_name = category.name
+                category.delete()
+                messages.success(request, f'Category "{category_name}" has been deleted successfully!')
+            except Category.DoesNotExist:
+                messages.error(request, 'Category not found!')
+            except Exception as e:
+                messages.error(request, f'Error deleting category: {str(e)}')
+    except PermissionDenied:
+        return render(request, 'permission_denied_popup.html', {
+            'message': "You don't have permission to delete categories."
+        })
+    except Exception as e:
+        messages.error(request, f'Error deleting category: {str(e)}')
     return redirect('workspace')
 
-@user_passes_test(is_staff)
+@permission_required('Selling.delete_product', raise_exception=True)
 def delete_product(request, product_id):
-    if request.method == 'POST':
-        try:
-            product = Product.objects.get(id=product_id)
-            product_name = product.name
-            product.delete()
-            messages.success(request, f'Product "{product_name}" has been deleted successfully!')
-        except Product.DoesNotExist:
-            messages.error(request, 'Product not found!')
-        except Exception as e:
-            messages.error(request, f'Error deleting product: {str(e)}')
+    try:
+        if request.method == 'POST':
+            try:
+                product = Product.objects.get(id=product_id)
+                product_name = product.name
+                product.delete()
+                messages.success(request, f'Product "{product_name}" has been deleted successfully!')
+            except Product.DoesNotExist:
+                messages.error(request, 'Product not found!')
+            except Exception as e:
+                messages.error(request, f'Error deleting product: {str(e)}')
+    except PermissionDenied:
+        return render(request, 'permission_denied_popup.html', {
+            'message': "You don't have permission to delete products."
+        })
+    except Exception as e:
+        messages.error(request, f'Error deleting product: {str(e)}')
     return redirect('workspace')
 
-@user_passes_test(is_staff)
+@permission_required('Selling.change_product', raise_exception=True)
 def edit_product(request, product_id):
-    if request.method == 'POST':
-        try:
-            product = Product.objects.get(id=product_id)
-            product.name = request.POST.get('name')
-            category_id = request.POST.get('category')
-            product.category = Category.objects.get(id=category_id)
-            product.price = request.POST.get('price')
-            product.description = request.POST.get('description')
-            
-            # Handle image update if a new image is provided
-            new_image = request.FILES.get('image')
-            if new_image:
-                product.image = new_image
-            
-            product.save()
-            messages.success(request, f'Product "{product.name}" has been updated successfully!')
-        except Product.DoesNotExist:
-            messages.error(request, 'Product not found!')
-        except Category.DoesNotExist:
-            messages.error(request, 'Category not found!')
-        except Exception as e:
-            messages.error(request, f'Error updating product: {str(e)}')
+    try:
+        if request.method == 'POST':
+            try:
+                product = Product.objects.get(id=product_id)
+                product.name = request.POST.get('name')
+                category_id = request.POST.get('category')
+                product.category = Category.objects.get(id=category_id)
+                product.price = request.POST.get('price')
+                product.description = request.POST.get('description')
+                
+                # Handle image update if a new image is provided
+                new_image = request.FILES.get('image')
+                if new_image:
+                    product.image = new_image
+                
+                product.save()
+                messages.success(request, f'Product "{product.name}" has been updated successfully!')
+            except Product.DoesNotExist:
+                messages.error(request, 'Product not found!')
+            except Category.DoesNotExist:
+                messages.error(request, 'Category not found!')
+            except Exception as e:
+                messages.error(request, f'Error updating product: {str(e)}')
+    except PermissionDenied:
+        return render(request, 'permission_denied_popup.html', {
+            'message': "You don't have permission to edit products."
+        })
+    except Exception as e:
+        messages.error(request, f'Error updating product: {str(e)}')
     return redirect('workspace')
 
 def add_to_cart(request, product_id):

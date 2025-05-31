@@ -21,7 +21,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 # settings.py
-CSRF_TRUSTED_ORIGINS = ['https://bbu-d104-g3.thavrak-lab.xyz', 'http://your-other-domain.com']
+CSRF_TRUSTED_ORIGINS = ['https://bbu-d104-g3.thavrak-lab.xyz']
 
 
 # Application definition
