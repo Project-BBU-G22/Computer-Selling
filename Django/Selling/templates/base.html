@@ -69,6 +69,7 @@
                         </li>
                     </ul>
                     <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                        {% if not user.is_staff %}
                         <li class="nav-item me-2">
                             <a class="btn btn-outline-light" href="{% url 'view_cart' %}">
                                 <i class="bi-cart-fill me-1"></i>
@@ -80,6 +81,7 @@
                                 </span>
                             </a>
                         </li>
+                        {% endif %}
                         {% if user.is_authenticated %}
                             <li class="nav-item">
                                 <button class="btn btn-outline-light" type="button" data-bs-toggle="modal" data-bs-target="#exampleModal">
