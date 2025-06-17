@@ -6,6 +6,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import login
 from .forms import SignUpForm 
 from django.contrib.auth.decorators import user_passes_test, login_required, permission_required
+from django.contrib.admin.views.decorators import staff_member_required
 from django.core.paginator import Paginator
 from django.http import HttpResponseForbidden
 from django.core.exceptions import PermissionDenied
@@ -78,13 +79,39 @@ def workspace_view(request):
     products = Product.objects.all()
     categories = Category.objects.all()
     orders = Order.objects.all().order_by('-created_at')
+      # Calculate total amount of all orders
+    from django.db.models import Sum
+    from django.db.models.functions import Extract
+    from datetime import datetime, timedelta
+    import calendar
+    import json
+    
+    total_orders_amount = orders.aggregate(Sum('total_amount'))['total_amount__sum'] or 0
+    
+    # Get monthly revenue data for the last 12 months
+    current_date = datetime.now()
+    monthly_revenue = []
+    month_labels = []
+    
+    for i in range(11, -1, -1):  # Last 12 months
+        target_date = current_date - timedelta(days=30 * i)
+        month_orders = orders.filter(
+            created_at__year=target_date.year,
+            created_at__month=target_date.month
+        )
+        month_total = month_orders.aggregate(Sum('total_amount'))['total_amount__sum'] or 0
+        monthly_revenue.append(float(month_total))
+        month_labels.append(calendar.month_abbr[target_date.month])
+    
+    # Convert to JSON for JavaScript
+    monthly_revenue_json = json.dumps(monthly_revenue)
+    month_labels_json = json.dumps(month_labels)
     
     # Pagination for products
     paginator = Paginator(products, 12)  # Show 12 products per page
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
-    
-    # Pagination for orders
+      # Pagination for orders
     order_paginator = Paginator(orders, 10)  # Show 10 orders per page
     order_page_number = request.GET.get('order_page')
     order_page_obj = order_paginator.get_page(order_page_number)
@@ -95,6 +122,9 @@ def workspace_view(request):
         'Orders': order_page_obj,
         'page_obj': page_obj,
         'order_page_obj': order_page_obj,
+        'total_orders_amount': total_orders_amount,
+        'monthly_revenue_json': monthly_revenue_json,
+        'month_labels_json': month_labels_json,
     })
 
 @permission_required('Selling.add_category', raise_exception=True)
@@ -376,21 +406,46 @@ def order_detail(request, order_id):
     order = get_object_or_404(Order, id=order_id, user=request.user)
     return render(request, 'order_detail.html', {'order': order})
 
-@permission_required('Selling.change_order', raise_exception=True)
+@staff_member_required
 def update_order_status(request, order_id):
+    """
+    Update order status - only staff members can perform this action
+    """
+    if not request.user.is_staff:
+        messages.error(request, 'Access denied. Staff privileges required.')
+        return redirect('home')
+    
     if request.method == 'POST':
         try:
             order = get_object_or_404(Order, id=order_id)
             new_status = request.POST.get('status')
             
-            if new_status in dict(Order.STATUS_CHOICES):
-                order.status = new_status
-                order.save()
-                messages.success(request, f'Order #{order.order_number} status updated to {order.get_status_display()}')
-            else:
+            # Validate the new status
+            if new_status not in [choice[0] for choice in Order.STATUS_CHOICES]:
                 messages.error(request, 'Invalid status selected')
+                return redirect('workspace')
+            
+            # Store old status for logging
+            old_status = order.get_status_display()
+            
+            # Update the order status
+            order.status = new_status
+            order.save()
+            
+            # Success message with detailed info
+            messages.success(
+                request, 
+                f'Order #{order.order_number} status updated to "{order.get_status_display()}"'
+            )
+            
+            # Log the status change (optional - for audit trail)
+            print(f"Staff {request.user.username} updated order #{order.order_number} status from {old_status} to {order.get_status_display()}")
                 
+        except Order.DoesNotExist:
+            messages.error(request, 'Order not found')
         except Exception as e:
             messages.error(request, f'Error updating order status: {str(e)}')
+    else:
+        messages.error(request, 'Invalid request method')
     
     return redirect('workspace')
