@@ -2,61 +2,390 @@
 {% load static %}
 
 {% block content %}
-<div class="container mt-4">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card shadow" style="background-color: #f8f9fa;">
-                <div class="card-header bg-secondary text-white">
-                    <h2 class="mb-0"><i class="bi bi-bag-check me-2"></i>Checkout</h2>
-                </div>
-                <div class="card-body">
-                    <h4 class="mb-3">Order Summary</h4>
-                    <div class="table-responsive mb-4">
-                        <table class="table">
-                            <thead>
+<div class="min-h-screen bg-gray-50 py-12">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="bg-white rounded-lg shadow-xl overflow-hidden">
+            <div class="bg-gradient-to-r from-gray-900 to-gray-800 px-6 py-4">
+                <h2 class="text-2xl font-bold text-white flex items-center">
+                    <i class="bi bi-bag-check mr-3 text-2xl"></i>
+                    Checkout
+                </h2>
+            </div>
+            
+            <div class="p-6">
+                <div class="mb-8">
+                    <h3 class="text-xl font-semibold text-gray-900 mb-4">Order Summary</h3>
+                    <div class="bg-gray-50 rounded-lg overflow-hidden">
+                        <table class="w-full">
+                            <thead class="bg-gray-200">
                                 <tr>
-                                    <th>Product</th>
-                                    <th>Price</th>
-                                    <th class="text-center">Quantity</th>
-                                    <th class="text-center">Total</th>
+                                    <th class="px-6 py-3 text-left text-sm font-medium text-gray-700">Product</th>
+                                    <th class="px-6 py-3 text-center text-sm font-medium text-gray-700">Price</th>
+                                    <th class="px-6 py-3 text-center text-sm font-medium text-gray-700">Quantity</th>
+                                    <th class="px-6 py-3 text-center text-sm font-medium text-gray-700">Total</th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody class="divide-y divide-gray-200">
                                 {% for item in cart_items %}
-                                <tr>
-                                    <td>{{ item.product.name }}</td>
-                                    <td>${{ item.product.price }}</td>
-                                    <td class="text-center">{{ item.quantity }}</td>
-                                    <td class="text-center">${{ item.get_total_price }}</td>
+                                <tr class="hover:bg-gray-50">
+                                    <td class="px-6 py-4 text-sm text-gray-900">{{ item.product.name }}</td>
+                                    <td class="px-6 py-4 text-center text-sm text-gray-900">${{ item.product.price }}</td>
+                                    <td class="px-6 py-4 text-center text-sm text-gray-900">{{ item.quantity }}</td>
+                                    <td class="px-6 py-4 text-center text-sm font-medium text-gray-900">${{ item.get_total_price }}</td>
                                 </tr>
                                 {% endfor %}
                             </tbody>
-                            <tfoot>
+                            <tfoot class="bg-gray-100">
                                 <tr>
-                                    <td colspan="3" class="text-end"><strong>Grand Total:</strong></td>
-                                    <td><strong>${{ total_price }}</strong></td>
+                                    <td colspan="3" class="px-6 py-4 text-right font-semibold text-gray-900">Grand Total:</td>
+                                    <td class="px-6 py-4 text-center font-bold text-xl text-gray-900">${{ total_price }}</td>
                                 </tr>
                             </tfoot>
                         </table>
                     </div>
-                    <h4 class="mb-3">Shipping Information</h4>
-                    <form method="POST" action="">
-                        {% csrf_token %}
-                        <div class="mb-3">
-                            <label for="name" class="form-label">Full Name</label>
-                            <input type="text" class="form-control" id="name" name="name" value="{{ user.get_full_name|default:user.username }}" readonly>
+                </div>
+
+                <div class="mb-8">
+                    <h3 class="text-xl font-semibold text-gray-900 mb-4">Shipping Information</h3>
+                    <form method="POST" action="" class="space-y-6">
+                        {% csrf_token %}                        <div>
+                            <label for="name" class="block text-sm font-medium text-gray-700 mb-2">Full Name</label>
+                            <input type="text" id="name" name="name" value="{{ user.get_full_name|default:user.username }}" readonly 
+                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-50 text-gray-500 cursor-not-allowed">
                         </div>
-                        <div class="mb-3">
-                            <label for="phone" class="form-label">Phone Number</label>
-                            <input type="text" class="form-control" id="phone" name="phone" required>
+                        <div>
+                            <label for="email" class="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
+                            <input type="email" id="email" name="email" value="{{ user.email }}" readonly 
+                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-50 text-gray-500 cursor-not-allowed">
                         </div>
-                        <button type="button" class="btn btn-success" disabled>Place Order</button>
-                        <a href="{% url 'view_cart' %}" class="btn btn-secondary ms-2">Back to Cart</a>
+                        <div>
+                            <label for="phone" class="block text-sm font-medium text-gray-700 mb-2">Phone Number</label>
+                            <input type="text" id="phone" name="phone" required 
+                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-transparent">
+                        </div>
+                          <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-3">Delivery Options</label>
+                            <div class="space-y-3">
+                                <div class="flex items-center">
+                                    <input type="radio" id="pickup" name="delivery_option" value="pickup" required
+                                    class="h-4 w-4 text-gray-600 focus:ring-gray-500 border-gray-300">
+                                    <label for="pickup" class="ml-3 text-sm text-gray-700 flex items-center">
+                                        <i class="bi bi-shop mr-2 text-green-600"></i>
+                                        Store Pickup
+                                        <span class="ml-2 text-xs text-gray-500">(Free - Pick up from our store)</span>
+                                    </label>
+                                </div>
+                                <div class="flex items-center">
+                                    <input type="radio" id="delivery" name="delivery_option" value="delivery" required
+                                           class="h-4 w-4 text-gray-600 focus:ring-gray-500 border-gray-300">
+                                    <label for="delivery" class="ml-3 text-sm text-gray-700 flex items-center">
+                                        <i class="bi bi-truck mr-2 text-blue-600"></i>
+                                        Home Delivery
+                                        <span class="ml-2 text-xs text-gray-500">(Additional delivery charges may apply)</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div id="address-section">
+                            <label for="province" class="block text-sm font-medium text-gray-700 mb-2">Province</label>
+                            <select id="province" name="province" required 
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-transparent bg-white">
+                                <option value="">Select a province</option>
+                                <option value="Banteay Meanchey">Banteay Meanchey</option>
+                                <option value="Battambang">Battambang</option>
+                                <option value="Kampong Cham">Kampong Cham</option>
+                                <option value="Kampong Chhnang">Kampong Chhnang</option>
+                                <option value="Kampong Speu">Kampong Speu</option>
+                                <option value="Kampong Thom">Kampong Thom</option>
+                                <option value="Kampot">Kampot</option>
+                                <option value="Kandal">Kandal</option>
+                                <option value="Kep">Kep</option>
+                                <option value="Koh Kong">Koh Kong</option>
+                                <option value="Kratié">Kratié</option>
+                                <option value="Mondulkiri">Mondulkiri</option>
+                                <option value="Phnom Penh">Phnom Penh</option>
+                                <option value="Preah Vihear">Preah Vihear</option>
+                                <option value="Prey Veng">Prey Veng</option>
+                                <option value="Pursat">Pursat</option>
+                                <option value="Ratanakiri">Ratanakiri</option>
+                                <option value="Siem Reap">Siem Reap</option>
+                                <option value="Preah Sihanouk">Preah Sihanouk</option>
+                                <option value="Stung Treng">Stung Treng</option>
+                                <option value="Svay Rieng">Svay Rieng</option>
+                                <option value="Takéo">Takéo</option>
+                                <option value="Oddar Meanchey">Oddar Meanchey</option>
+                                <option value="Kep">Kep</option>
+                                <option value="Pailin">Pailin</option>
+                                <option value="Tboung Khmum">Tboung Khmum</option>
+                            </select>                        </div>
+                        
+                        <!-- Payment Information Section -->
+                        <div class="mb-8">
+                            <h3 class="text-xl font-semibold text-gray-900 mb-4 flex items-center">
+                                <i class="bi bi-credit-card mr-3 text-blue-600"></i>
+                                Payment Information
+                            </h3>
+                            
+                            <!-- Payment Method Selection -->
+                            <div class="mb-6">
+                                <label class="block text-sm font-medium text-gray-700 mb-3">Payment Method</label>
+                                <div class="space-y-3">
+                                    <div class="flex items-center p-4 border border-gray-200 rounded-lg hover:bg-blue-50 transition-colors">
+                                        <input type="radio" id="visa" name="payment_method" value="visa" required
+                                               class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300">
+                                        <label for="visa" class="ml-3 text-sm text-gray-700 flex items-center w-full">
+                                            <div class="flex items-center">
+                                                <div class="w-12 h-8 bg-blue-600 rounded flex items-center justify-center mr-3">
+                                                    <span class="text-white font-bold text-xs">VISA</span>
+                                                </div>
+                                                <div>
+                                                    <div class="font-medium">Visa Card</div>
+                                                    <div class="text-xs text-green-600 font-medium">No Additional Fees</div>
+                                                </div>
+                                            </div>
+                                        </label>
+                                    </div>
+                                    <div class="flex items-center p-4 border border-gray-200 rounded-lg opacity-50">
+                                        <input type="radio" id="cash" name="payment_method" value="cash" disabled
+                                               class="h-4 w-4 text-gray-400 border-gray-300">
+                                        <label for="cash" class="ml-3 text-sm text-gray-500 flex items-center w-full">
+                                            <div class="flex items-center">
+                                                <i class="bi bi-cash-stack text-2xl text-gray-400 mr-3"></i>
+                                                <div>
+                                                    <div class="font-medium">Cash on Delivery</div>
+                                                    <div class="text-xs text-gray-400">Coming Soon</div>
+                                                </div>
+                                            </div>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Visa Card Details -->
+                            <div id="visa-details" class="space-y-4 bg-blue-50 p-6 rounded-lg border border-blue-200">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div class="md:col-span-2">
+                                        <label for="card_number" class="block text-sm font-medium text-gray-700 mb-2">
+                                            Card Number
+                                        </label>                                        <div class="relative">
+                                            <input type="text" id="card_number" name="card_number" 
+                                                   placeholder="1234 5678 9012 3456" maxlength="19" required
+                                                   pattern="[0-9\s]{19}" title="Please enter a valid 16-digit card number"
+                                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent pl-12">
+                                            <div class="absolute left-3 top-1/2 transform -translate-y-1/2">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div>
+                                        <label for="card_name" class="block text-sm font-medium text-gray-700 mb-2">
+                                            Cardholder Name
+                                        </label>
+                                        <input type="text" id="card_name" name="card_name" 
+                                               placeholder="Name" required
+                                               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                    </div>
+                                    
+                                    <div class="grid grid-cols-2 gap-4">
+                                        <div>
+                                            <label for="expiry_date" class="block text-sm font-medium text-gray-700 mb-2">
+                                                Expiry Date
+                                            </label>
+                                            <input type="text" id="expiry_date" name="expiry_date" 
+                                                   placeholder="MM/YY" maxlength="5" required
+                                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                        </div>
+                                        <div>
+                                            <label for="cvv" class="block text-sm font-medium text-gray-700 mb-2">
+                                                CVV
+                                            </label>
+                                            <input type="text" id="cvv" name="cvv" 
+                                                   placeholder="123" maxlength="3" required
+                                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Security Notice -->
+                                <div class="bg-green-50 border border-green-200 rounded-lg p-4 mt-4">
+                                    <div class="flex items-center">
+                                        <i class="bi bi-shield-check text-green-600 text-lg mr-3"></i>
+                                        <div class="text-sm">
+                                            <div class="font-medium text-green-800">Secure Payment</div>
+                                            <div class="text-green-700">Your payment information is encrypted and secure. No additional fees for Visa transactions.</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                          <div class="flex flex-col sm:flex-row gap-4 pt-6">
+                            <button type="submit" id="checkout-btn"
+                                    class="flex-1 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed text-white px-6 py-3 rounded-lg font-medium transition duration-300 flex items-center justify-center">
+                                <i class="bi bi-credit-card mr-2"></i>
+                                Complete Payment - ${{ total_price }}
+                            </button>
+                            <a href="{% url 'view_cart' %}" 
+                               class="flex-1 bg-gray-700 hover:bg-gray-800 text-white px-6 py-3 rounded-lg font-medium text-center transition duration-300">
+                                Back to Cart
+                            </a>
+                        </div>
                     </form>
                 </div>
-            </div>
+            </div>        
         </div>
     </div>
 </div>
-</br></br></br>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const deliveryRadio = document.getElementById('delivery');
+    const pickupRadio = document.getElementById('pickup');
+    const addressSection = document.getElementById('address-section');
+    const provinceSelect = document.getElementById('province');
+    
+    // Payment related elements
+    const visaRadio = document.getElementById('visa');
+    const cashRadio = document.getElementById('cash');
+    const visaDetails = document.getElementById('visa-details');    const cardNumberInput = document.getElementById('card_number');
+    const expiryDateInput = document.getElementById('expiry_date');
+    const cvvInput = document.getElementById('cvv');
+    const cardNameInput = document.getElementById('card_name');
+    const phoneInput = document.getElementById('phone');
+    const checkoutBtn = document.getElementById('checkout-btn');
+    
+    function validateForm() {
+        let isValid = true;
+        
+        // Check delivery option
+        const deliverySelected = pickupRadio.checked || deliveryRadio.checked;
+        if (!deliverySelected) isValid = false;
+        
+        // Check province if delivery is selected
+        if (deliveryRadio.checked && !provinceSelect.value) isValid = false;
+        
+        // Check phone number
+        if (!phoneInput.value.trim()) isValid = false;
+        
+        // Check payment method
+        const paymentSelected = visaRadio.checked;
+        if (!paymentSelected) isValid = false;
+        
+        // If Visa is selected, validate card details
+        if (visaRadio.checked) {
+            const cardNumber = cardNumberInput.value.replace(/\D/g, '');
+            if (cardNumber.length !== 16) isValid = false;
+            if (!cardNameInput.value.trim()) isValid = false;
+            if (!expiryDateInput.value.trim() || expiryDateInput.value.length !== 5) isValid = false;
+            if (!cvvInput.value.trim() || cvvInput.value.length !== 3) isValid = false;
+        }
+        
+        // Enable/disable submit button
+        checkoutBtn.disabled = !isValid;
+        if (isValid) {
+            checkoutBtn.classList.remove('bg-gray-400', 'cursor-not-allowed');
+            checkoutBtn.classList.add('bg-blue-600', 'hover:bg-blue-700');
+        } else {
+            checkoutBtn.classList.add('bg-gray-400', 'cursor-not-allowed');
+            checkoutBtn.classList.remove('bg-blue-600', 'hover:bg-blue-700');
+        }
+    }
+      function toggleAddressSection() {
+        if (pickupRadio.checked) {
+            addressSection.style.display = 'none';
+            provinceSelect.required = false;
+        } else if (deliveryRadio.checked) {
+            addressSection.style.display = 'block';
+            provinceSelect.required = true;
+        }
+        validateForm();
+    }
+    
+    function togglePaymentDetails() {
+        if (visaRadio.checked) {
+            visaDetails.style.display = 'block';
+        } else {
+            visaDetails.style.display = 'none';
+        }
+        validateForm();
+    }
+      // Format card number input (16 digits only)
+    function formatCardNumber(value) {
+        // Remove all non-digits
+        const v = value.replace(/\D/g, '');
+        // Limit to 16 digits
+        const limited = v.substring(0, 16);
+        // Add spaces every 4 digits
+        const parts = [];
+        for (let i = 0; i < limited.length; i += 4) {
+            parts.push(limited.substring(i, i + 4));
+        }
+        return parts.join(' ');
+    }
+    
+    // Validate card number (must be exactly 16 digits)
+    function validateCardNumber(value) {
+        const digits = value.replace(/\D/g, '');
+        return digits.length === 16;
+    }
+    
+    // Format expiry date input
+    function formatExpiryDate(value) {
+        const v = value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
+        if (v.length >= 2) {
+            return v.substring(0, 2) + (v.length > 2 ? '/' + v.substring(2, 4) : '');
+        }
+        return v;
+    }
+      // Add event listeners
+    deliveryRadio.addEventListener('change', toggleAddressSection);
+    pickupRadio.addEventListener('change', toggleAddressSection);
+    visaRadio.addEventListener('change', togglePaymentDetails);
+    cashRadio.addEventListener('change', togglePaymentDetails);
+    
+    // Add validation event listeners
+    phoneInput.addEventListener('input', validateForm);
+    provinceSelect.addEventListener('change', validateForm);
+    cardNameInput.addEventListener('input', validateForm);
+    
+    // Format inputs
+    cardNumberInput.addEventListener('input', function(e) {
+        e.target.value = formatCardNumber(e.target.value);
+        
+        // Visual feedback for validation
+        const digits = e.target.value.replace(/\D/g, '');
+        if (digits.length === 16) {
+            e.target.classList.remove('border-red-300');
+            e.target.classList.add('border-green-300');
+        } else if (digits.length > 0) {
+            e.target.classList.remove('border-green-300');
+            e.target.classList.add('border-red-300');
+        } else {
+            e.target.classList.remove('border-red-300', 'border-green-300');
+        }
+        validateForm();
+    });
+    
+    expiryDateInput.addEventListener('input', function(e) {
+        e.target.value = formatExpiryDate(e.target.value);
+        validateForm();
+    });
+    
+    cvvInput.addEventListener('input', function(e) {
+        e.target.value = e.target.value.replace(/[^0-9]/gi, '');
+        validateForm();
+    });
+      // Initial state - hide address section until delivery is selected
+    addressSection.style.display = 'none';
+    provinceSelect.required = false;
+    
+    // Initial state - show visa details by default
+    visaRadio.checked = true;
+    togglePaymentDetails();
+    
+    // Initial validation
+    validateForm();
+});
+</script>
+
 {% endblock %}

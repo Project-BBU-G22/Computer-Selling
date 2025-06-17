@@ -1,0 +1,153 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="min-h-screen bg-gray-50 py-12">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="bg-white rounded-lg shadow-xl overflow-hidden">
+            <div class="bg-gradient-to-r from-gray-900 to-gray-800 px-6 py-4">
+                <h2 class="text-2xl font-bold text-white flex items-center">
+                    <i class="bi bi-receipt mr-3 text-2xl"></i>
+                    Order Details - #{{ order.order_number }}
+                </h2>
+            </div>
+            
+            <div class="p-6">
+                <!-- Order Status and Date -->
+                <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-8 pb-6 border-b border-gray-200">
+                    <div>
+                        <h3 class="text-xl font-semibold text-gray-900 mb-2">Order #{{ order.order_number }}</h3>
+                        <p class="text-gray-600">Placed on {{ order.created_at|date:"F d, Y - g:i A" }}</p>
+                    </div>
+                    <div class="mt-4 md:mt-0">
+                        <span class="px-4 py-2 rounded-full text-sm font-medium
+                            {% if order.status == 'pending' %}bg-yellow-100 text-yellow-800{% endif %}
+                            {% if order.status == 'processing' %}bg-blue-100 text-blue-800{% endif %}
+                            {% if order.status == 'shipped' %}bg-purple-100 text-purple-800{% endif %}
+                            {% if order.status == 'delivered' %}bg-green-100 text-green-800{% endif %}
+                            {% if order.status == 'cancelled' %}bg-red-100 text-red-800{% endif %}">
+                            {{ order.get_status_display }}
+                        </span>
+                    </div>
+                </div>
+                
+                <!-- Order Items -->
+                <div class="mb-8">
+                    <h4 class="text-lg font-semibold text-gray-900 mb-4">Items Ordered</h4>
+                    <div class="bg-gray-50 rounded-lg overflow-hidden">
+                        <table class="w-full">
+                            <thead class="bg-gray-200">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-sm font-medium text-gray-700">Product</th>
+                                    <th class="px-6 py-3 text-center text-sm font-medium text-gray-700">Price</th>
+                                    <th class="px-6 py-3 text-center text-sm font-medium text-gray-700">Quantity</th>
+                                    <th class="px-6 py-3 text-center text-sm font-medium text-gray-700">Total</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-200">
+                                {% for item in order.items.all %}
+                                <tr class="hover:bg-gray-50">
+                                    <td class="px-6 py-4 text-sm text-gray-900">{{ item.product.name }}</td>
+                                    <td class="px-6 py-4 text-center text-sm text-gray-900">${{ item.price }}</td>
+                                    <td class="px-6 py-4 text-center text-sm text-gray-900">{{ item.quantity }}</td>
+                                    <td class="px-6 py-4 text-center text-sm font-medium text-gray-900">${{ item.get_total_price }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                            <tfoot class="bg-gray-100">
+                                <tr>
+                                    <td colspan="3" class="px-6 py-4 text-right font-semibold text-gray-900">Grand Total:</td>
+                                    <td class="px-6 py-4 text-center font-bold text-xl text-gray-900">${{ order.total_amount }}</td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+                
+                <!-- Customer & Delivery Information -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                    <div class="bg-gray-50 rounded-lg p-6">
+                        <h4 class="font-semibold text-gray-900 mb-4 flex items-center">
+                            <i class="bi bi-person mr-2 text-blue-600"></i>
+                            Customer Information
+                        </h4>
+                        <div class="space-y-3">
+                            <div>
+                                <span class="text-sm font-medium text-gray-600">Name:</span>
+                                <p class="text-gray-900">{{ order.customer_name }}</p>
+                            </div>
+                            <div>
+                                <span class="text-sm font-medium text-gray-600">Email:</span>
+                                <p class="text-gray-900">{{ order.customer_email }}</p>
+                            </div>
+                            <div>
+                                <span class="text-sm font-medium text-gray-600">Phone:</span>
+                                <p class="text-gray-900">{{ order.customer_phone }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-gray-50 rounded-lg p-6">
+                        <h4 class="font-semibold text-gray-900 mb-4 flex items-center">
+                            <i class="bi bi-truck mr-2 text-green-600"></i>
+                            Delivery Information
+                        </h4>
+                        <div class="space-y-3">
+                            <div>
+                                <span class="text-sm font-medium text-gray-600">Method:</span>
+                                <p class="text-gray-900">
+                                    {% if order.delivery_option == 'pickup' %}
+                                        <span class="text-green-600 flex items-center">
+                                            <i class="bi bi-shop mr-2"></i>
+                                            Store Pickup
+                                        </span>
+                                    {% else %}
+                                        <span class="text-blue-600 flex items-center">
+                                            <i class="bi bi-truck mr-2"></i>
+                                            Home Delivery
+                                        </span>
+                                    {% endif %}
+                                </p>
+                            </div>
+                            {% if order.province %}
+                            <div>
+                                <span class="text-sm font-medium text-gray-600">Province:</span>
+                                <p class="text-gray-900">{{ order.province }}</p>
+                            </div>
+                            {% endif %}
+                            <div>
+                                <span class="text-sm font-medium text-gray-600">Payment Method:</span>
+                                <p class="text-gray-900">
+                                    {% if order.payment_method == 'visa' %}
+                                        <span class="flex items-center">
+                                            <i class="bi bi-credit-card mr-2 text-blue-600"></i>
+                                            Visa Card (****{{ order.card_last_four }})
+                                        </span>
+                                    {% else %}
+                                        <span class="flex items-center">
+                                            <i class="bi bi-cash-stack mr-2 text-green-600"></i>
+                                            Cash on Delivery
+                                        </span>
+                                    {% endif %}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Action Buttons -->
+                <div class="flex flex-col sm:flex-row gap-4 pt-6 border-t border-gray-200">
+                    <a href="{% url 'order_history' %}" 
+                       class="flex-1 bg-gray-700 hover:bg-gray-800 text-white px-6 py-3 rounded-lg font-medium text-center transition duration-300">
+                        Back to Order History
+                    </a>
+                    <a href="{% url 'home' %}" 
+                       class="flex-1 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium text-center transition duration-300">
+                        Continue Shopping
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

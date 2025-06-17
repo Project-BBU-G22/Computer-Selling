@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Product, Category, Cart
+from .models import Product, Category, Cart, Order, OrderItem
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.shortcuts import render, redirect
@@ -9,6 +9,7 @@ from django.contrib.auth.decorators import user_passes_test, login_required, per
 from django.core.paginator import Paginator
 from django.http import HttpResponseForbidden
 from django.core.exceptions import PermissionDenied
+from django.db import transaction
 
 
 
@@ -76,16 +77,24 @@ def workspace_view(request):
     # All staff users can access the workspace
     products = Product.objects.all()
     categories = Category.objects.all()
+    orders = Order.objects.all().order_by('-created_at')
     
-    # Pagination
+    # Pagination for products
     paginator = Paginator(products, 12)  # Show 12 products per page
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
     
+    # Pagination for orders
+    order_paginator = Paginator(orders, 10)  # Show 10 orders per page
+    order_page_number = request.GET.get('order_page')
+    order_page_obj = order_paginator.get_page(order_page_number)
+    
     return render(request, 'workspace.html', {
         'Products': page_obj,
         'Categories': categories,
+        'Orders': order_page_obj,
         'page_obj': page_obj,
+        'order_page_obj': order_page_obj,
     })
 
 @permission_required('Selling.add_category', raise_exception=True)
@@ -266,19 +275,122 @@ def checkout(request):
         return redirect('login')
 
     cart_items = Cart.objects.filter(user=request.user)
+    if not cart_items:
+        messages.error(request, "Your cart is empty")
+        return redirect('view_cart')
+    
     total_price = sum(item.get_total_price() for item in cart_items)
 
     if request.method == 'POST':
-        name = request.POST.get('name')
-        address = request.POST.get('address')
-        phone = request.POST.get('phone')
-        # Here you would create an Order and clear the cart, etc.
-        # For now, just show a success message and redirect to home
-        messages.success(request, 'Order placed successfully!')
-        cart_items.delete()
-        return redirect('home')
+        try:
+            with transaction.atomic():
+                # Get form data
+                customer_name = request.POST.get('name')
+                customer_email = request.POST.get('email')
+                customer_phone = request.POST.get('phone')
+                delivery_option = request.POST.get('delivery_option')
+                province = request.POST.get('province') if delivery_option == 'delivery' else None
+                payment_method = request.POST.get('payment_method')
+                
+                # Get payment details for Visa
+                card_number = request.POST.get('card_number', '')
+                card_last_four = card_number.replace(' ', '')[-4:] if card_number else None
+                
+                # Validate required fields
+                required_fields = [customer_name, customer_email, customer_phone, delivery_option, payment_method]
+                if delivery_option == 'delivery':
+                    required_fields.append(province)
+                
+                if not all(required_fields):
+                    messages.error(request, 'Please fill in all required fields')
+                    return render(request, 'checkout.html', {
+                        'cart_items': cart_items,
+                        'total_price': total_price
+                    })
+                
+                # Create the order
+                order = Order.objects.create(
+                    user=request.user,
+                    customer_name=customer_name,
+                    customer_email=customer_email,
+                    customer_phone=customer_phone,
+                    delivery_option=delivery_option,
+                    province=province,
+                    payment_method=payment_method,
+                    card_last_four=card_last_four,
+                    total_amount=total_price,
+                    status='pending'
+                )
+                
+                # Create order items from cart
+                for cart_item in cart_items:
+                    OrderItem.objects.create(
+                        order=order,
+                        product=cart_item.product,
+                        quantity=cart_item.quantity,
+                        price=cart_item.product.price  # Store current price
+                    )
+                
+                # Clear the cart after successful order creation
+                cart_items.delete()
+                
+                # Success message with order details
+                messages.success(request, 
+                    f'Order #{order.order_number} placed successfully! '
+                    f'Total: ${order.total_amount}. '
+                    f'You will receive confirmation details at {customer_email}.')
+                
+                return redirect('order_success', order_id=order.id)
+                
+        except Exception as e:
+            messages.error(request, f'Error processing your order: {str(e)}')
+            return render(request, 'checkout.html', {
+                'cart_items': cart_items,
+                'total_price': total_price
+            })
 
     return render(request, 'checkout.html', {
         'cart_items': cart_items,
         'total_price': total_price
     })
+
+def order_success(request, order_id):
+    if not request.user.is_authenticated:
+        return redirect('login')
+    
+    order = get_object_or_404(Order, id=order_id, user=request.user)
+    return render(request, 'order_success.html', {'order': order})
+
+def order_history(request):
+    if not request.user.is_authenticated:
+        messages.error(request, "Please login to view your orders")
+        return redirect('login')
+    
+    orders = Order.objects.filter(user=request.user).order_by('-created_at')
+    return render(request, 'order_history.html', {'orders': orders})
+
+def order_detail(request, order_id):
+    if not request.user.is_authenticated:
+        return redirect('login')
+    
+    order = get_object_or_404(Order, id=order_id, user=request.user)
+    return render(request, 'order_detail.html', {'order': order})
+
+@permission_required('Selling.change_order', raise_exception=True)
+def update_order_status(request, order_id):
+    if request.method == 'POST':
+        try:
+            order = get_object_or_404(Order, id=order_id)
+            new_status = request.POST.get('status')
+            
+            if new_status in dict(Order.STATUS_CHOICES):
+                order.status = new_status
+                order.save()
+                messages.success(request, f'Order #{order.order_number} status updated to {order.get_status_display()}')
+            else:
+                messages.error(request, 'Invalid status selected')
+                
+        except Exception as e:
+            messages.error(request, f'Error updating order status: {str(e)}')
+    
+    return redirect('workspace')

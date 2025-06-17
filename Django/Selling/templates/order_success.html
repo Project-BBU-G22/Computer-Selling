@@ -1,0 +1,116 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="min-h-screen bg-gray-50 py-12">
+    <div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="bg-white rounded-lg shadow-xl overflow-hidden">
+            <!-- Success Header -->
+            <div class="bg-gradient-to-r from-green-600 to-green-700 px-6 py-8 text-center">
+                <div class="flex justify-center mb-4">
+                    <div class="bg-white rounded-full p-4">
+                        <i class="bi bi-check-circle-fill text-green-600 text-6xl"></i>
+                    </div>
+                </div>
+                <h1 class="text-3xl font-bold text-white mb-2">Order Confirmed!</h1>
+                <p class="text-green-100 text-lg">Thank you for your purchase</p>
+            </div>
+            
+            <!-- Order Details -->
+            <div class="p-6">
+                <div class="text-center mb-8">
+                    <h2 class="text-2xl font-semibold text-gray-900 mb-2">Order #{{ order.order_number }}</h2>
+                    <p class="text-gray-600">Your order has been successfully placed and is being processed.</p>
+                </div>
+                
+                <!-- Order Summary -->
+                <div class="bg-gray-50 rounded-lg p-6 mb-6">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Order Summary</h3>
+                    
+                    <div class="space-y-3">
+                        {% for item in order.items.all %}
+                        <div class="flex justify-between items-center py-2 border-b border-gray-200 last:border-b-0">
+                            <div class="flex-1">
+                                <span class="font-medium">{{ item.product.name }}</span>
+                                <span class="text-gray-600 ml-2">x{{ item.quantity }}</span>
+                            </div>
+                            <span class="font-medium">${{ item.get_total_price }}</span>
+                        </div>
+                        {% endfor %}
+                        
+                        <div class="flex justify-between items-center pt-4 border-t-2 border-gray-300">
+                            <span class="text-xl font-bold text-gray-900">Total:</span>
+                            <span class="text-xl font-bold text-gray-900">${{ order.total_amount }}</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Customer & Delivery Information -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                    <div class="bg-gray-50 rounded-lg p-4">
+                        <h4 class="font-semibold text-gray-900 mb-3">Customer Information</h4>
+                        <div class="space-y-2 text-sm">
+                            <p><span class="font-medium">Name:</span> {{ order.customer_name }}</p>
+                            <p><span class="font-medium">Email:</span> {{ order.customer_email }}</p>
+                            <p><span class="font-medium">Phone:</span> {{ order.customer_phone }}</p>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-gray-50 rounded-lg p-4">
+                        <h4 class="font-semibold text-gray-900 mb-3">Delivery Information</h4>
+                        <div class="space-y-2 text-sm">
+                            <p><span class="font-medium">Method:</span> 
+                                {% if order.delivery_option == 'pickup' %}
+                                    <span class="text-green-600">Store Pickup</span>
+                                {% else %}
+                                    <span class="text-blue-600">Home Delivery</span>
+                                {% endif %}
+                            </p>
+                            {% if order.province %}
+                                <p><span class="font-medium">Province:</span> {{ order.province }}</p>
+                            {% endif %}
+                            <p><span class="font-medium">Payment:</span> 
+                                {% if order.payment_method == 'visa' %}
+                                    Visa Card (****{{ order.card_last_four }})
+                                {% else %}
+                                    Cash on Delivery
+                                {% endif %}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Next Steps -->
+                <div class="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-6">
+                    <h4 class="font-semibold text-blue-900 mb-3 flex items-center">
+                        <i class="bi bi-info-circle mr-2"></i>
+                        What happens next?
+                    </h4>
+                    <div class="space-y-2 text-sm text-blue-800">
+                        <p>✓ You will receive an order confirmation email shortly</p>
+                        <p>✓ We will process your order within 1-2 business days</p>
+                        {% if order.delivery_option == 'pickup' %}
+                            <p>✓ You will be notified when your order is ready for pickup</p>
+                        {% else %}
+                            <p>✓ Your order will be shipped to your specified address</p>
+                            <p>✓ You will receive tracking information once shipped</p>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <!-- Action Buttons -->
+                <div class="flex flex-col sm:flex-row gap-4">
+                    <a href="{% url 'home' %}" 
+                       class="flex-1 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium text-center transition duration-300">
+                        Continue Shopping
+                    </a>
+                    <a href="{% url 'order_detail' order.id %}" 
+                       class="flex-1 bg-gray-700 hover:bg-gray-800 text-white px-6 py-3 rounded-lg font-medium text-center transition duration-300">
+                        View Order Details
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

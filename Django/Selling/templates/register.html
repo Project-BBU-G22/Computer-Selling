@@ -4,63 +4,91 @@
 {% block title %}Register{% endblock %}
 
 {% block content %}
-<div class="d-flex justify-content-center align-items-center vh-100 bg-light">
-    <div class="container" style="max-width: 500px;">
-        <br>
-        <h2 class="text-center mb-4">Create Account</h2>
-        <form method="POST" action="">
-            {% csrf_token %}
-            <div class="mb-3">
-                <label for="{{ form.username.id_for_label }}" class="form-label">Username</label>
-                <input type="text" class="form-control" id="{{ form.username.id_for_label }}" name="{{ form.username.name }}" value="{{ form.username.value|default:'' }}" required>
-                {% if form.username.errors %}
-                    <div class="text-danger">{{ form.username.errors }}</div>
-                {% endif %}
+<div class="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-2xl w-full space-y-8">
+        <div class="bg-white rounded-lg shadow-xl p-8">
+            <div class="text-center mb-8">
+                <h2 class="text-3xl font-bold text-gray-900">Create Account</h2>
+                <p class="text-gray-600 mt-2">Join BBU Computer Store</p>
             </div>
-            <div class="mb-3">
-                <label for="{{ form.first_name.id_for_label }}" class="form-label">First Name</label>
-                <input type="text" class="form-control" id="{{ form.first_name.id_for_label }}" name="{{ form.first_name.name }}" value="{{ form.first_name.value|default:'' }}" required>
-                {% if form.first_name.errors %}
-                    <div class="text-danger">{{ form.first_name.errors }}</div>
-                {% endif %}
+            
+            <form method="POST" action="" class="space-y-6">
+                {% csrf_token %}
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label for="{{ form.first_name.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">First Name</label>
+                        <input type="text" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-transparent transition duration-300" 
+                               id="{{ form.first_name.id_for_label }}" name="{{ form.first_name.name }}" 
+                               value="{{ form.first_name.value|default:'' }}" placeholder="Enter your first name" required>
+                        {% if form.first_name.errors %}
+                            <div class="text-red-500 text-sm mt-1">{{ form.first_name.errors }}</div>
+                        {% endif %}
+                    </div>
+                    
+                    <div>
+                        <label for="{{ form.last_name.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">Last Name</label>
+                        <input type="text" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-transparent transition duration-300" 
+                               id="{{ form.last_name.id_for_label }}" name="{{ form.last_name.name }}" 
+                               value="{{ form.last_name.value|default:'' }}" placeholder="Enter your last name" required>
+                        {% if form.last_name.errors %}
+                            <div class="text-red-500 text-sm mt-1">{{ form.last_name.errors }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+                 <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label for="{{ form.username.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">Username</label>
+                        <input type="text" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-transparent transition duration-300" 
+                               id="{{ form.username.id_for_label }}" name="{{ form.username.name }}" 
+                               value="{{ form.username.value|default:'' }}" placeholder="Enter your username" required>
+                        {% if form.username.errors %}
+                            <div class="text-red-500 text-sm mt-1">{{ form.username.errors }}</div>
+                        {% endif %}
+                    </div>
+                    
+                    <div>
+                        <label for="{{ form.email.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                        <input type="email" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-transparent transition duration-300" 
+                               id="{{ form.email.id_for_label }}" name="{{ form.email.name }}" 
+                               value="{{ form.email.value|default:'' }}" placeholder="Example@gmail.com" required>
+                        {% if form.email.errors %}
+                            <div class="text-red-500 text-sm mt-1">{{ form.email.errors }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div>
+                    <label for="{{ form.password1.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">Password</label>
+                    <input type="password" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-transparent transition duration-300" 
+                           id="{{ form.password1.id_for_label }}" name="{{ form.password1.name }}" 
+                           placeholder="Enter your password" required>
+                    {% if form.password1.errors %}
+                        <div class="text-red-500 text-sm mt-1">{{ form.password1.errors }}</div>
+                    {% endif %}
+                </div>
+                
+                <div>
+                    <label for="{{ form.password2.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">Confirm Password</label>
+                    <input type="password" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-transparent transition duration-300" 
+                           id="{{ form.password2.id_for_label }}" name="{{ form.password2.name }}" 
+                           placeholder="Confirm your password" required>
+                    {% if form.password2.errors %}
+                        <div class="text-red-500 text-sm mt-1">{{ form.password2.errors }}</div>
+                    {% endif %}
+                </div>
+                
+                <button type="submit" 
+                        class="w-full bg-gray-700 hover:bg-gray-800 text-white font-medium py-3 px-4 rounded-lg transition duration-300 shadow-md">
+                    Register
+                </button>
+            </form>
+            
+            <div class="text-center mt-6">
+                <p class="text-gray-600">
+                    Already have an Account? 
+                    <a href="{% url 'login' %}" class="text-gray-700 hover:text-gray-900 font-medium underline">Log In</a>
+                </p>
             </div>
-            <div class="mb-3">
-                <label for="{{ form.last_name.id_for_label }}" class="form-label">Last Name</label>
-                <input type="text" class="form-control" id="{{ form.last_name.id_for_label }}" name="{{ form.last_name.name }}" value="{{ form.last_name.value|default:'' }}" required>
-                {% if form.last_name.errors %}
-                    <div class="text-danger">{{ form.last_name.errors }}</div>
-                {% endif %}
-            </div>
-            <div class="mb-3">
-                <label for="{{ form.email.id_for_label }}" class="form-label">Email</label>
-                <input type="email" class="form-control" id="{{ form.email.id_for_label }}" name="{{ form.email.name }}" value="{{ form.email.value|default:'' }}" placeholder="Example@gmail.com" required>
-                {% if form.email.value %}
-                    <div class="form-text">We'll never share your email with anyone else.</div>
-                {% endif %}
-                {% if form.email.errors %}
-                    <div class="text-danger">{{ form.email.errors }}</div>
-                {% endif %}
-            </div>
-            <div class="mb-3">
-                <label for="{{ form.password1.id_for_label }}" class="form-label">Password</label>
-                <input type="password" class="form-control" id="{{ form.password1.id_for_label }}" name="{{ form.password1.name }}" required>
-                {% if form.password1.errors %}
-                    <div class="text-danger">{{ form.password1.errors }}</div>
-                {% endif %}
-            </div>
-            <div class="mb-3">
-                <label for="{{ form.password2.id_for_label }}" class="form-label">Confirm Password</label>
-                <input type="password" class="form-control" id="{{ form.password2.id_for_label }}" name="{{ form.password2.name }}" required>
-                {% if form.password2.errors %}
-                    <div class="text-danger">{{ form.password2.errors }}</div>
-                {% endif %}
-            </div>
-            <div class="d-grid">
-                <button type="submit" class="btn btn-primary btn-lg">Register</button>
-            </div>
-        </form>
-        <div class="text-center mt-3">
-            <p>Already have an Account? <a href="{% url 'login' %}">Log In</a></p>
         </div>
     </div>
 </div>
