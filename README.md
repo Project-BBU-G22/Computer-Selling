@@ -12,8 +12,7 @@ This project is develop for Python subject.🐍🐍
 ![VS Code](https://img.shields.io/badge/VS_Code-007ACC?style=for-the-badge&logo=visual-studio-code&logoColor=white) 
 ![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white) 
 ![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white)  
-![Django](https://img.shields.io/badge/Django-092E20?style=for-the-badge&logo=django&logoColor=white)  
-![PostgreSQL](https://img.shields.io/badge/PostgreSQL-4169E1?style=for-the-badge&logo=postgresql&logoColor=white) 
+![Django](https://img.shields.io/badge/Django-092E20?style=for-the-badge&logo=django&logoColor=white)
 
 </div>
 <br>
@@ -21,50 +20,82 @@ This project is develop for Python subject.🐍🐍
 # To Start Using The Project 
 
 
-### Step 1: Clone The Repositories
+## Step 1: Clone The Repositories
 
 ```sh
 git clone https://github.com/Project-BBU-G22/Computer-Selling.git
 ```
 
-### Step 2: Navigate To Computer-Selling
+## Step 2: Navigate To Computer-Selling
 
 ```sh
 cd Computer-Selling
 ```
 
-### Step 3: Create Python Environment
+## Step 3: Create Python Environment
+
+#### For Windows
 
 ```sh
 python -m venv .env
 ```
 
-### Step 4: Activate The Environment
+#### For Mac
+
+```sh
+python3 -m venv .env
+``` 
+
+## Step 4: Activate The Environment
+
+#### For Windows
 
 ```sh
 .env\Scripts\activate
 ```
 
+#### For Mac
 
-### Step 5: Install Dependencies From requirements.txt
+```sh
+source .env/bin/activate
+``` 
+
+## Step 5: Install Dependencies From requirements.txt
 
 ```sh
 pip install -r requirements.txt
 ```
 
-### Step 6: Navigate To The File 
+## Step 6: Navigate To The File 
 
 ```sh
 cd Django
 ```
 
-### Step 7: Run The Project
+## Step 7: Create Database (SQL lite)
+
+```sh
+python manage.py makemigrations 
+```
+```sh
+python manage.py migrate
+``` 
+
+## Step 8: Create Admin User 
+
+```sh
+python manage.py createsuperuser
+```
+
+#### Note : For skipping email just press Enter
+
+## Step 9: Run The Project
 
 ```sh
 python manage.py runserver
 ```
 
-### ‼️To Close The Python Environment ‼️
+## ‼️To Close The Python Environment ‼️
 
 ```sh
 cd ..
