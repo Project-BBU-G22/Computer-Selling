@@ -86,7 +86,9 @@ def workspace_view(request):
     import calendar
     import json
     
-    total_orders_amount = orders.aggregate(Sum('total_amount'))['total_amount__sum'] or 0
+    # Calculate total amount only for delivered orders
+    delivered_orders = orders.filter(status='delivered')
+    total_orders_amount = delivered_orders.aggregate(Sum('total_amount'))['total_amount__sum'] or 0
     
     # Get monthly revenue data for the last 12 months
     current_date = datetime.now()
@@ -97,7 +99,8 @@ def workspace_view(request):
         target_date = current_date - timedelta(days=30 * i)
         month_orders = orders.filter(
             created_at__year=target_date.year,
-            created_at__month=target_date.month
+            created_at__month=target_date.month,
+            status='delivered'  # Only count delivered orders for revenue
         )
         month_total = month_orders.aggregate(Sum('total_amount'))['total_amount__sum'] or 0
         monthly_revenue.append(float(month_total))
@@ -138,7 +141,7 @@ def add_category(request):
             messages.error(request, 'Category name is required!')
     return redirect('workspace')
 
-@permission_required('Selling.add_product', raise_exception=True)
+@user_passes_test(lambda u: u.is_authenticated and u.is_staff)
 def add_product(request):
     try:
         if request.method == 'POST':
@@ -189,7 +192,7 @@ def delete_category(request, category_id):
         messages.error(request, f'Error deleting category: {str(e)}')
     return redirect('workspace')
 
-@permission_required('Selling.delete_product', raise_exception=True)
+@user_passes_test(lambda u: u.is_authenticated and u.is_staff)
 def delete_product(request, product_id):
     try:
         if request.method == 'POST':
@@ -210,7 +213,7 @@ def delete_product(request, product_id):
         messages.error(request, f'Error deleting product: {str(e)}')
     return redirect('workspace')
 
-@permission_required('Selling.change_product', raise_exception=True)
+@user_passes_test(lambda u: u.is_authenticated and u.is_staff)
 def edit_product(request, product_id):
     try:
         if request.method == 'POST':
